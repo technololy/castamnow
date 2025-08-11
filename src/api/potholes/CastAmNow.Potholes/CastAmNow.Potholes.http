@@ -1,0 +1,6 @@
+@CastAmNow.Potholes_HostAddress = http://localhost:5111
+
+GET {{CastAmNow.Potholes_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
