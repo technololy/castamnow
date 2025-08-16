@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Web", "src\web\Ca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Web.Client", "src\web\CastAmNow.Web\CastAmNow.Web.Client\CastAmNow.Web.Client.csproj", "{671B9795-50CE-94AD-7CE1-C640438CBAD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Mobile", "src\mobile\CastAmNow.Mobile\CastAmNow.Mobile\CastAmNow.Mobile.csproj", "{BF92854A-42B0-49B7-9843-8D1A2665AADE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,11 @@ Global
 		{671B9795-50CE-94AD-7CE1-C640438CBAD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{671B9795-50CE-94AD-7CE1-C640438CBAD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{671B9795-50CE-94AD-7CE1-C640438CBAD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF92854A-42B0-49B7-9843-8D1A2665AADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF92854A-42B0-49B7-9843-8D1A2665AADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF92854A-42B0-49B7-9843-8D1A2665AADE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BF92854A-42B0-49B7-9843-8D1A2665AADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF92854A-42B0-49B7-9843-8D1A2665AADE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +116,7 @@ Global
 		{6EBBFD4B-738F-3EE9-9538-9C5FB0C20526} = {63640D03-377E-41E4-A8C2-18852BA9FB81}
 		{8D56EDA6-F4F9-1353-3599-57FDC7CAFBAF} = {3358AAD8-57CA-4EA7-9E86-C6D4EA48C4D8}
 		{671B9795-50CE-94AD-7CE1-C640438CBAD0} = {3358AAD8-57CA-4EA7-9E86-C6D4EA48C4D8}
+		{BF92854A-42B0-49B7-9843-8D1A2665AADE} = {1A0564FD-B3E7-4329-808D-0CA3F7EFFD0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43DF6E6E-B69B-46E4-924F-0B44E765AA6F}

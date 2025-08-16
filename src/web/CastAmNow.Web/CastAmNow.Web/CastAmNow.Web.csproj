@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\aspire\CastAmNow.ServiceDefaults\CastAmNow.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\..\ui\CastAmNow.UI\CastAmNow.UI.csproj" />
     <ProjectReference Include="..\CastAmNow.Web.Client\CastAmNow.Web.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
   </ItemGroup>
