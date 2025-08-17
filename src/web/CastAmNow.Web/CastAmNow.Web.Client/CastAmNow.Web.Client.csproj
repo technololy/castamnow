@@ -16,4 +16,8 @@
     <ProjectReference Include="..\..\..\ui\CastAmNow.UI\CastAmNow.UI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\" />
+  </ItemGroup>
+
 </Project>

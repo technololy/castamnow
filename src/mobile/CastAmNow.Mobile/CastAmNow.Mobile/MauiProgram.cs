@@ -1,6 +1,6 @@
-﻿using CastAmNow.Mobile.Services;
-using CastAmNow.UI.Services;
+﻿using CastAmNow.UI.Services;
 using Microsoft.Extensions.Logging;
+using FormFactor = CastAmNow.Mobile.Services.FormFactor;
 
 namespace CastAmNow.Mobile
 {
