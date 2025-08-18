@@ -1,10 +1,12 @@
-using CastAmNow.Web.Client.Pages;
+using CastAmNow.UI.Services;
+using CastAmNow.UI.Pages;
 using CastAmNow.Web.Components;
+using CastAmNow.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-
+builder.Services.AddSingleton<IFormFactor, FormFactor>();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
