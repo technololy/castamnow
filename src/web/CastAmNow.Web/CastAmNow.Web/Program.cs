@@ -1,7 +1,6 @@
 using CastAmNow.UI.Services;
-using CastAmNow.UI.Pages;
-using CastAmNow.Web.Components;
 using CastAmNow.Web.Services;
+using CastAmNow.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
