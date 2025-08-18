@@ -32,9 +32,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode()
-    .DisableAntiforgery();
+    .AddInteractiveWebAssemblyRenderMode();  // Only using WebAssembly mode
 
 
 app.UseAntiforgery();
