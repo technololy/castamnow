@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace CastAmNow.Potholes.Controllers;
+namespace CastAmNow.Defects.Controllers;
 
 [ApiController]
 [Route("[controller]")]

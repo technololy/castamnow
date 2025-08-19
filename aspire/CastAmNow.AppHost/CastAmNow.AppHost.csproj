@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\api\potholes\CastAmNow.Potholes\CastAmNow.Potholes.csproj" />
+    <ProjectReference Include="..\..\src\api\defects\CastAmNow.Defects\CastAmNow.Defects.csproj" />
     <ProjectReference Include="..\..\src\web\CastAmNow.Web\CastAmNow.Web\CastAmNow.Web.csproj" />
   </ItemGroup>
 

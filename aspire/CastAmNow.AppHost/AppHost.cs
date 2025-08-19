@@ -1,8 +1,8 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var potholes = builder.AddProject<Projects.CastAmNow_Potholes>("potholes");
+var defects = builder.AddProject<Projects.CastAmNow_Defects>("defects");
 
 var web = builder.AddProject<Projects.CastAmNow_Web>("web")
-    .WithReference(potholes);
+    .WithReference(defects);
 
 builder.Build().Run();

@@ -9,12 +9,16 @@
   <ItemGroup>
     <Compile Remove="Components\Layout\**" />
     <Compile Remove="Components\Pages\**" />
+    <Compile Remove="wwwroot\**" />
     <Content Remove="Components\Layout\**" />
     <Content Remove="Components\Pages\**" />
+    <Content Remove="wwwroot\**" />
     <EmbeddedResource Remove="Components\Layout\**" />
     <EmbeddedResource Remove="Components\Pages\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
     <None Remove="Components\Layout\**" />
     <None Remove="Components\Pages\**" />
+    <None Remove="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,9 +26,5 @@
     <ProjectReference Include="..\..\..\ui\CastAmNow.UI\CastAmNow.UI.csproj" />
     <ProjectReference Include="..\CastAmNow.Web.Client\CastAmNow.Web.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 </Project>

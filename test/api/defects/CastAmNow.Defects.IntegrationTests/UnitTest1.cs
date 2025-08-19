@@ -1,4 +1,4 @@
-﻿namespace CastAmNow.Potholes.IntegrationTests
+﻿namespace CastAmNow.Defects.IntegrationTests
 {
     public class UnitTest1
     {

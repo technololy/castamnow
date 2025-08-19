@@ -33,13 +33,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aspire", "aspire", "{9C04AC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.AppHost.IntegrationTest", "test\aspire\CastAmNow.AppHost.IntegrationTest\CastAmNow.AppHost.IntegrationTest.csproj", "{73C8A702-389A-49F4-8CD9-4A46C18C8CF8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "potholes", "potholes", "{4868981E-5EB7-46DF-883B-5DCA1DA73D07}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "defects", "defects", "{4868981E-5EB7-46DF-883B-5DCA1DA73D07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Potholes", "src\api\potholes\CastAmNow.Potholes\CastAmNow.Potholes.csproj", "{818FF764-2F6F-510A-4EB1-41238C1C0A6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defects", "src\api\defects\CastAmNow.Defects\CastAmNow.Defects.csproj", "{818FF764-2F6F-510A-4EB1-41238C1C0A6B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "potholes", "potholes", "{52F20D0E-E4B8-4C92-BB7C-21FE6A8F135C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "defects", "defects", "{52F20D0E-E4B8-4C92-BB7C-21FE6A8F135C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Potholes.IntegrationTests", "test\api\potholes\CastAmNow.Potholes.IntegrationTests\CastAmNow.Potholes.IntegrationTests.csproj", "{DB303676-9564-49F7-AF04-F425F4C1535B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defects.IntegrationTests", "test\api\defects\CastAmNow.Defects.IntegrationTests\CastAmNow.Defects.IntegrationTests.csproj", "{DB303676-9564-49F7-AF04-F425F4C1535B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.UI", "src\ui\CastAmNow.UI\CastAmNow.UI.csproj", "{6EBBFD4B-738F-3EE9-9538-9C5FB0C20526}"
 EndProject

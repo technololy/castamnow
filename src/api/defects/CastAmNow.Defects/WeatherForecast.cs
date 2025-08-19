@@ -1,4 +1,4 @@
-namespace CastAmNow.Potholes;
+namespace CastAmNow.Defects;
 
 public class WeatherForecast
 {
