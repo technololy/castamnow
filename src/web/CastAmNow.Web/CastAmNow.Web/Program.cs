@@ -1,10 +1,10 @@
-using CastAmNow.Web.Client.Pages;
+using CastAmNow.UI.Services;
 using CastAmNow.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
-
+builder.Services.AddTransient<IFormFactor, FormFactor>();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -28,6 +28,12 @@ else
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+app.UseAntiforgery();
+
+app.MapRazorComponents<App>()
+    .AddInteractiveWebAssemblyRenderMode();  // Only using WebAssembly mode
+
 
 app.UseAntiforgery();
 
@@ -35,6 +41,7 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(CastAmNow.Web.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(CastAmNow.Web.Client._Imports).Assembly)
+    .AddAdditionalAssemblies(typeof(CastAmNow.UI._Imports).Assembly);
 
 app.Run();
