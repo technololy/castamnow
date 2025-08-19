@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using CastAmNow.UI.Services;
+using CastAmNow.Web.Client.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

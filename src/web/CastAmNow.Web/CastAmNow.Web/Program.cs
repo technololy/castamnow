@@ -1,5 +1,5 @@
 using CastAmNow.UI.Services;
-using CastAmNow.Web.Components;
+using CastAmNow.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,14 +31,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveWebAssemblyRenderMode();  // Only using WebAssembly mode
-
-
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
+app.MapRazorComponents<CastAmNow.Web.Components.App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(CastAmNow.Web.Client._Imports).Assembly)
