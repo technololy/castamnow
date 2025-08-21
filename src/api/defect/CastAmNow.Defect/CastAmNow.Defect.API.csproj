@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
+	<PackageReference Include="AutoMapper" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+	<PackageReference Include="Swashbuckle.AspNetCore" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\aspire\CastAmNow.ServiceDefaults\CastAmNow.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\..\core\CastAmNow.Core\CastAmNow.Core.csproj" />
+    <ProjectReference Include="..\..\..\db\CastAmNow.Defect.Data\CastAmNow.Defect.Data.csproj" />
+    <ProjectReference Include="..\..\infrastructure\CastAmNow.Api.Infrastructure\CastAmNow.Api.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

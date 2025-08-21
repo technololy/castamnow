@@ -11,11 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" />
+	<PackageReference Include="Aspire.Hosting.AppHost" />
+	<PackageReference Include="Aspire.Hosting.Redis" />
+	<PackageReference Include="Aspire.Hosting.SqlServer" />
+	<PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
+	<PackageReference Include="Aspire.Hosting.Azure.Storage" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\api\defects\CastAmNow.Defects\CastAmNow.Defects.csproj" />
+    <ProjectReference Include="..\..\src\api\defect\CastAmNow.Defect\CastAmNow.Defect.API.csproj" />
+    <ProjectReference Include="..\..\src\db\CastAmNow.Defect.MigrationService\CastAmNow.Defect.MigrationService.csproj" />
+    <ProjectReference Include="..\..\src\db\CastAmNow.SeedData\CastAmNow.SeedData.csproj" />
     <ProjectReference Include="..\..\src\web\CastAmNow.Web\CastAmNow.Web\CastAmNow.Web.csproj" />
   </ItemGroup>
 

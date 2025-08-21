@@ -33,13 +33,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aspire", "aspire", "{9C04AC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.AppHost.IntegrationTest", "test\aspire\CastAmNow.AppHost.IntegrationTest\CastAmNow.AppHost.IntegrationTest.csproj", "{73C8A702-389A-49F4-8CD9-4A46C18C8CF8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "defects", "defects", "{4868981E-5EB7-46DF-883B-5DCA1DA73D07}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "defect", "defect", "{4868981E-5EB7-46DF-883B-5DCA1DA73D07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defects", "src\api\defects\CastAmNow.Defects\CastAmNow.Defects.csproj", "{818FF764-2F6F-510A-4EB1-41238C1C0A6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defect.API", "src\api\defect\CastAmNow.Defect\CastAmNow.Defect.API.csproj", "{818FF764-2F6F-510A-4EB1-41238C1C0A6B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "defects", "defects", "{52F20D0E-E4B8-4C92-BB7C-21FE6A8F135C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "defect", "defect", "{52F20D0E-E4B8-4C92-BB7C-21FE6A8F135C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defects.IntegrationTests", "test\api\defects\CastAmNow.Defects.IntegrationTests\CastAmNow.Defects.IntegrationTests.csproj", "{DB303676-9564-49F7-AF04-F425F4C1535B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defect.IntegrationTests", "test\api\defect\CastAmNow.Defect.IntegrationTests\CastAmNow.Defect.IntegrationTests.csproj", "{DB303676-9564-49F7-AF04-F425F4C1535B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.UI", "src\ui\CastAmNow.UI\CastAmNow.UI.csproj", "{6EBBFD4B-738F-3EE9-9538-9C5FB0C20526}"
 EndProject
@@ -48,6 +48,22 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Web.Client", "src\web\CastAmNow.Web\CastAmNow.Web.Client\CastAmNow.Web.Client.csproj", "{671B9795-50CE-94AD-7CE1-C640438CBAD0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Mobile", "src\mobile\CastAmNow.Mobile\CastAmNow.Mobile\CastAmNow.Mobile.csproj", "{BF92854A-42B0-49B7-9843-8D1A2665AADE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastructure", "{7A17E063-8C3B-4D35-B6F7-B7B85F4FB72B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Api.Infrastructure", "src\api\infrastructure\CastAmNow.Api.Infrastructure\CastAmNow.Api.Infrastructure.csproj", "{0FBCAD7F-0315-4B16-BFA9-1D2FD7A9DAE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defect.Data", "src\db\CastAmNow.Defect.Data\CastAmNow.Defect.Data.csproj", "{F48DD73A-9EDF-40BD-A432-655F793DD800}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defect.MigrationService", "src\db\CastAmNow.Defect.MigrationService\CastAmNow.Defect.MigrationService.csproj", "{71D54989-59F8-40AD-ACEE-738AC2593144}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Domain", "src\entity\CastAmNow.Domain\CastAmNow.Domain.csproj", "{2EC7A311-CE0C-4D03-A863-5B3B6A7F92A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Domain.Defect", "src\entity\CastAmNow.Domain.Defect\CastAmNow.Domain.Defect.csproj", "{9308874B-BDBE-468F-9336-E665CE275D9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Core", "src\core\CastAmNow.Core\CastAmNow.Core.csproj", "{1575795F-AC6B-46EF-A075-7CD365680A49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.SeedData", "src\db\CastAmNow.SeedData\CastAmNow.SeedData.csproj", "{A5221D1D-8705-ACF6-320C-C67E37283520}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,6 +108,34 @@ Global
 		{BF92854A-42B0-49B7-9843-8D1A2665AADE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{BF92854A-42B0-49B7-9843-8D1A2665AADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF92854A-42B0-49B7-9843-8D1A2665AADE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FBCAD7F-0315-4B16-BFA9-1D2FD7A9DAE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FBCAD7F-0315-4B16-BFA9-1D2FD7A9DAE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FBCAD7F-0315-4B16-BFA9-1D2FD7A9DAE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FBCAD7F-0315-4B16-BFA9-1D2FD7A9DAE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F48DD73A-9EDF-40BD-A432-655F793DD800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F48DD73A-9EDF-40BD-A432-655F793DD800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F48DD73A-9EDF-40BD-A432-655F793DD800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F48DD73A-9EDF-40BD-A432-655F793DD800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71D54989-59F8-40AD-ACEE-738AC2593144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71D54989-59F8-40AD-ACEE-738AC2593144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71D54989-59F8-40AD-ACEE-738AC2593144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71D54989-59F8-40AD-ACEE-738AC2593144}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EC7A311-CE0C-4D03-A863-5B3B6A7F92A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EC7A311-CE0C-4D03-A863-5B3B6A7F92A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EC7A311-CE0C-4D03-A863-5B3B6A7F92A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EC7A311-CE0C-4D03-A863-5B3B6A7F92A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9308874B-BDBE-468F-9336-E665CE275D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9308874B-BDBE-468F-9336-E665CE275D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9308874B-BDBE-468F-9336-E665CE275D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9308874B-BDBE-468F-9336-E665CE275D9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1575795F-AC6B-46EF-A075-7CD365680A49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1575795F-AC6B-46EF-A075-7CD365680A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1575795F-AC6B-46EF-A075-7CD365680A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1575795F-AC6B-46EF-A075-7CD365680A49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5221D1D-8705-ACF6-320C-C67E37283520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5221D1D-8705-ACF6-320C-C67E37283520}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5221D1D-8705-ACF6-320C-C67E37283520}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5221D1D-8705-ACF6-320C-C67E37283520}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,6 +161,14 @@ Global
 		{8D56EDA6-F4F9-1353-3599-57FDC7CAFBAF} = {3358AAD8-57CA-4EA7-9E86-C6D4EA48C4D8}
 		{671B9795-50CE-94AD-7CE1-C640438CBAD0} = {3358AAD8-57CA-4EA7-9E86-C6D4EA48C4D8}
 		{BF92854A-42B0-49B7-9843-8D1A2665AADE} = {1A0564FD-B3E7-4329-808D-0CA3F7EFFD0A}
+		{7A17E063-8C3B-4D35-B6F7-B7B85F4FB72B} = {424A3731-AFCA-427B-8B83-D294BFC8F0C0}
+		{0FBCAD7F-0315-4B16-BFA9-1D2FD7A9DAE8} = {7A17E063-8C3B-4D35-B6F7-B7B85F4FB72B}
+		{F48DD73A-9EDF-40BD-A432-655F793DD800} = {5A42EFD0-64F2-4278-B76E-4F05C8ED13CF}
+		{71D54989-59F8-40AD-ACEE-738AC2593144} = {5A42EFD0-64F2-4278-B76E-4F05C8ED13CF}
+		{2EC7A311-CE0C-4D03-A863-5B3B6A7F92A9} = {7FF576B7-2B87-4319-A0A3-435BBFF77148}
+		{9308874B-BDBE-468F-9336-E665CE275D9C} = {7FF576B7-2B87-4319-A0A3-435BBFF77148}
+		{1575795F-AC6B-46EF-A075-7CD365680A49} = {F1CEE782-1E2F-4B60-9066-02260DB810F7}
+		{A5221D1D-8705-ACF6-320C-C67E37283520} = {5A42EFD0-64F2-4278-B76E-4F05C8ED13CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43DF6E6E-B69B-46E4-924F-0B44E765AA6F}
