@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Core", "src\core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.SeedData", "src\db\CastAmNow.SeedData\CastAmNow.SeedData.csproj", "{A5221D1D-8705-ACF6-320C-C67E37283520}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Sdk", "src\core\CastAmNow.Sdk\CastAmNow.Sdk.csproj", "{6F852A3E-35DC-40A5-B14A-EAD2A3D41829}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,10 @@ Global
 		{A5221D1D-8705-ACF6-320C-C67E37283520}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5221D1D-8705-ACF6-320C-C67E37283520}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5221D1D-8705-ACF6-320C-C67E37283520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F852A3E-35DC-40A5-B14A-EAD2A3D41829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F852A3E-35DC-40A5-B14A-EAD2A3D41829}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F852A3E-35DC-40A5-B14A-EAD2A3D41829}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F852A3E-35DC-40A5-B14A-EAD2A3D41829}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,6 +175,7 @@ Global
 		{9308874B-BDBE-468F-9336-E665CE275D9C} = {7FF576B7-2B87-4319-A0A3-435BBFF77148}
 		{1575795F-AC6B-46EF-A075-7CD365680A49} = {F1CEE782-1E2F-4B60-9066-02260DB810F7}
 		{A5221D1D-8705-ACF6-320C-C67E37283520} = {5A42EFD0-64F2-4278-B76E-4F05C8ED13CF}
+		{6F852A3E-35DC-40A5-B14A-EAD2A3D41829} = {F1CEE782-1E2F-4B60-9066-02260DB810F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43DF6E6E-B69B-46E4-924F-0B44E765AA6F}
