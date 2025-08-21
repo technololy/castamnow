@@ -1,0 +1,63 @@
+@page "/"
+
+<div class="cast-container">
+    <div class="cast-box">
+        <textarea class="cast-input"
+                  placeholder="What do you want to cast now?"
+                  @bind="_newCast"></textarea>
+        <div class="cast-actions">
+            <button class="cast-btn" @onclick="PostCast" disabled="@string.IsNullOrWhiteSpace(_newCast)">
+                Cast Now
+            </button>
+        </div>
+    </div>
+
+    <div class="cast-feed">
+        @foreach (var cast in _casts)
+        {
+            <div class="cast-item">
+                <div class="cast-user">@cast.User</div>
+                <div class="cast-text">@cast.Text</div>
+                <div class="cast-time">@cast.TimePosted.ToString("MMM d, h:mm tt")</div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private string? _newCast;
+    private List<Cast> _casts = [];
+
+    protected override void OnInitialized()
+    {
+        // Dummy seed data
+        _casts =
+        [
+            new Cast { User = "👤 Ada", Text = "NEPA don take light again 😡", TimePosted = DateTime.Now.AddMinutes(-5) },
+            new Cast { User = "👤 Bayo", Text = "Fuel price don high! 🚗⛽", TimePosted = DateTime.Now.AddHours(-1) },
+            new Cast { User = "👤 Chika", Text = "Who get update for better job abeg? 🙏", TimePosted = DateTime.Now.AddHours(-3) },
+            new Cast { User = "👤 Damilola", Text = "Traffic for 3rd Mainland Bridge na wah o 🚦", TimePosted = DateTime.Now.AddDays(-1) }
+        ];
+    }
+
+    private void PostCast()
+    {
+        if (!string.IsNullOrWhiteSpace(_newCast))
+        {
+            _casts.Insert(0, new Cast
+            {
+                User = "👤 You",
+                Text = _newCast,
+                TimePosted = DateTime.Now
+            });
+            _newCast = string.Empty;
+        }
+    }
+
+    private class Cast
+    {
+        public string User { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
+        public DateTime TimePosted { get; set; }
+    }
+}

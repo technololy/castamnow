@@ -1,0 +1,71 @@
+@page "/cast-something-new"
+
+<div class="report-modal">
+    <div class="modal-header">
+        <h3>Cast something new</h3>
+        <button class="close-btn" @onclick="CloseModal">×</button>
+    </div>
+
+    <div class="modal-body">
+        <p class="label">What are you casting?</p>
+        <div class="report-types">
+            @foreach (var type in ReportTypes)
+            {
+                <button type="button"
+                        class="report-type @(SelectedType == type ? "selected" : "")"
+                        @onclick="() => SelectType(type)">
+                    <span>@type</span>
+                </button>
+            }
+        </div>
+
+        <p class="label">Location</p>
+        <input class="input-box" @bind="Location" />
+
+        <p class="label">Description</p>
+        <textarea class="text-box" @bind="Description"></textarea>
+
+        <p class="label">Photos (optional)</p>
+        <input class="input-box" type="text" @bind="PhotoUrl" placeholder="Enter photo URL" />
+    </div>
+
+    <div class="modal-footer">
+        <button class="cancel-btn" @onclick="CloseModal">Cancel</button>
+        <button class="submit-btn" disabled="@IsSubmitDisabled" @onclick="SubmitReport">Submit report</button>
+    </div>
+</div>
+
+@code {
+    private List<string> ReportTypes = new() { "Dumped Rubbish", "Graffiti or Vandalism", "Pedestrian Hazard", "Traffic Hazard", "Other" };
+    private string? SelectedType;
+    private string Location = string.Empty;
+    private string Description = string.Empty;
+    private string? PhotoUrl;
+
+    private bool IsSubmitDisabled => string.IsNullOrWhiteSpace(SelectedType) 
+                                  || string.IsNullOrWhiteSpace(Location) 
+                                  || string.IsNullOrWhiteSpace(Description);
+
+    private void SelectType(string type) => SelectedType = type;
+
+    private void SubmitReport()
+    {
+        // Handle saving/reporting logic
+        Console.WriteLine($"Report submitted: {SelectedType}, {Location}, {Description}, {PhotoUrl}");
+        ResetForm();
+    }
+
+    private void CloseModal()
+    {
+        // Logic to close the modal (if wrapped in a parent)
+        ResetForm();
+    }
+
+    private void ResetForm()
+    {
+        SelectedType = null;
+        Location = string.Empty;
+        Description = string.Empty;
+        PhotoUrl = null;
+    }
+}

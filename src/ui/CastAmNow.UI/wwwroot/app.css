@@ -49,3 +49,165 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.report-modal {
+    width: 400px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.label {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.report-types {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.report-type {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    background: #f5f5f5;
+}
+
+.report-type.selected {
+    border: 2px solid #28a745;
+    background: #e9f9ef;
+}
+
+.input-box, .text-box {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.text-box {
+    height: 100px;
+    resize: vertical;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    background: transparent;
+    border: 1px solid #28a745;
+    color: #28a745;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.submit-btn {
+    background: #28a745;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.cast-container {
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+.cast-box {
+    background: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #e6ecf0;
+}
+
+.cast-input {
+    width: 100%;
+    border: none;
+    font-size: 16px;
+    min-height: 60px;
+    resize: none;
+    outline: none;
+}
+
+.cast-actions {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.cast-btn {
+    background: #1DA1F2;
+    border: none;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.cast-btn:disabled {
+    background: #8ecdf7;
+    cursor: not-allowed;
+}
+
+.cast-feed {
+    background: #fff;
+}
+
+.cast-item {
+    padding: 15px;
+    border-bottom: 1px solid #e6ecf0;
+}
+
+.cast-user {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.cast-text {
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.cast-time {
+    font-size: 12px;
+    color: #657786;
+}
