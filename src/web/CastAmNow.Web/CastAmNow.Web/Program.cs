@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Services;
 
@@ -5,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddTransient<IFormFactor, FormFactor>();
+builder.Services.AddBlazoredModal();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
