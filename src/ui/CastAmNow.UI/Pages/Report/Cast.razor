@@ -1,0 +1,56 @@
+@page "/cast"
+
+<div class="cast-container">
+    <div class="cast-card">
+        <h3 class="cast-card-title">Cast a Civic Horror</h3>
+
+        <div class="form-group">
+            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="NewHorror.Title" />
+        </div>
+
+        <div class="form-group">
+            <textarea class="cast-input-2" placeholder="Describe the horror and add media..." @bind="NewHorror.Description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" /> 
+        </div>
+
+        <div class="cast-actions">
+            <button class="cast-btn" @onclick="SubmitHorror" disabled="@string.IsNullOrWhiteSpace(NewHorror.Title)">
+                Cast Am Now 🚨
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private HorrorSubmission NewHorror = new();
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            // For now just track file names, later upload to storage
+            NewHorror.Attachments.Add(file.Name);
+        }
+    }
+
+    private void SubmitHorror()
+    {
+        // TODO: Save to backend / database
+        Console.WriteLine($"Title: {NewHorror.Title}");
+        Console.WriteLine($"Description: {NewHorror.Description}");
+        Console.WriteLine($"Files: {string.Join(", ", NewHorror.Attachments)}");
+
+        // Reset form
+        NewHorror = new HorrorSubmission();
+    }
+
+    public class HorrorSubmission
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public List<string> Attachments { get; set; } = new();
+    }
+}

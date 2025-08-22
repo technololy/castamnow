@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Blazored.Modal;
 using CastAmNow.Sdk;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Services;
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddTransient<IFormFactor, FormFactor>();
+builder.Services.AddBlazoredModal();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -23,7 +25,7 @@ builder.Services.AddSingleton<IDefectApi>(sdk =>
     var clientFactory = sdk.GetRequiredService<IHttpClientFactory>();
     var blobContainerClient = sdk.GetRequiredService<BlobContainerClient>();
     var defectHttpClient = clientFactory.CreateClient("DefectClient");
-    return new DefectApi(defectHttpClient,blobContainerClient);
+    return new DefectApi(defectHttpClient, blobContainerClient);
 });
 var app = builder.Build();
 

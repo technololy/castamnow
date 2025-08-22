@@ -1,14 +1,17 @@
 @page "/"
 
+@inject NavigationManager NavigationManager
+
 <div class="cast-container">
-    <div class="cast-box">
-        <textarea class="cast-input"
-                  placeholder="What do you want to cast now?"
-                  @bind="_newCast"></textarea>
-        <div class="cast-actions">
-            <button class="cast-btn" @onclick="PostCast" disabled="@string.IsNullOrWhiteSpace(_newCast)">
-                Cast Now
-            </button>
+    <div class="cast-prompt-card">
+        <div class="prompt-header">
+            <span class="prompt-text">What civic horror do you want to cast?</span>
+        </div>
+
+        <div class="prompt-footer">
+            <button @onclick="OpenModal" class="cast-btn">Cast Bad Road</button>
+            <button @onclick="OpenModal" class="cast-btn">Cast Run Down Places</button>
+            <button @onclick="OpenModal" class="cast-btn">Cast Something else</button>
         </div>
     </div>
 
@@ -27,19 +30,38 @@
 @code {
     private string? _newCast;
     private List<Cast> _casts = [];
+    [CascadingParameter] public IModalService? Modal { get; set; }
 
     protected override void OnInitialized()
     {
         // Dummy seed data
         _casts =
         [
-            new Cast { User = "👤 Ada", Text = "NEPA don take light again 😡", TimePosted = DateTime.Now.AddMinutes(-5) },
-            new Cast { User = "👤 Bayo", Text = "Fuel price don high! 🚗⛽", TimePosted = DateTime.Now.AddHours(-1) },
-            new Cast { User = "👤 Chika", Text = "Who get update for better job abeg? 🙏", TimePosted = DateTime.Now.AddHours(-3) },
-            new Cast { User = "👤 Damilola", Text = "Traffic for 3rd Mainland Bridge na wah o 🚦", TimePosted = DateTime.Now.AddDays(-1) }
+        new Cast { User = "👤 Ada", Text = "NEPA don take light again 😡", TimePosted = DateTime.Now.AddMinutes(-5) },
+new Cast { User = "👤 Bayo", Text = "Fuel price don high! 🚗⛽", TimePosted = DateTime.Now.AddHours(-1) },
+new Cast { User = "👤 Chika", Text = "Who get update for better job abeg? 🙏", TimePosted = DateTime.Now.AddHours(-3) },
+new Cast { User = "👤 Damilola", Text = "Traffic for 3rd Mainland Bridge na wah o 🚦", TimePosted =
+DateTime.Now.AddDays(-1) }
         ];
     }
 
+    //coming back to this
+    private async Task OpenModal()
+    {
+        if (Modal is null) return;
+
+        var options = new ModalOptions()
+        {
+            Size = ModalSize.ExtraLarge,
+            Position = ModalPosition.Middle,
+            Class = "blazored-modal"
+        };
+
+        var modal = Modal.Show<Report.Cast>("Cast Your Horror", options);
+        var result = await modal.Result;
+    }
+
+    //and this
     private void PostCast()
     {
         if (!string.IsNullOrWhiteSpace(_newCast))
@@ -59,5 +81,10 @@
         public string User { get; set; } = string.Empty;
         public string Text { get; set; } = string.Empty;
         public DateTime TimePosted { get; set; }
+    }
+
+    void GoToCastPage()
+    {
+        NavigationManager.NavigateTo("/cast");
     }
 }

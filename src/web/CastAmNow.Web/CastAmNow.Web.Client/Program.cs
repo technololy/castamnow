@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Blazored.Modal;
+using CastAmNow.Sdk;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Client.Services;
-using CastAmNow.Sdk;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -9,4 +10,5 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddTransient<IDefectApi, DefectApi>();
 
+builder.Services.AddBlazoredModal();
 await builder.Build().RunAsync();
