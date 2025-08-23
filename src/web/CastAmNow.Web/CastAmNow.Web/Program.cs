@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using Blazored.LocalStorage;
 using Blazored.Modal;
+using CastAmNow.Sdk;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Services;
 
@@ -21,7 +22,17 @@ builder.Services.AddHttpClient<BackendApiService>(
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+builder.Services.AddHttpClient("DefectClient", cfg =>
+{
+    cfg.BaseAddress = new("https+http://api");
+});
 
+builder.Services.AddSingleton<IDefectApi>(sdk =>
+{
+    var clientFactory = sdk.GetRequiredService<IHttpClientFactory>();
+    var defectHttpClient = clientFactory.CreateClient("DefectClient");
+    return new DefectApi(defectHttpClient);
+});
 var app = builder.Build();
 
 app.MapDefaultEndpoints();

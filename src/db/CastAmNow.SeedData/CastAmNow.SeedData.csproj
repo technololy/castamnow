@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-CastAmNow.SeedData-ec24e96e-7042-4978-a6f5-9acce044118f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting" />
+	  <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
+	  <PackageReference Include="Bogus" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\aspire\CastAmNow.ServiceDefaults\CastAmNow.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\CastAmNow.Defect.Data\CastAmNow.Defect.Data.csproj" />
+  </ItemGroup>
+</Project>

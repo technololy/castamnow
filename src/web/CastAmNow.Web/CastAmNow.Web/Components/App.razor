@@ -11,12 +11,12 @@
     <link rel="stylesheet" href="_content/Blazored.Modal/blazored-modal.css" />
     <ImportMap />
     <link rel="icon" type="image/png" href="_content/CastAmNow.UI/favicon.png" />
-    <HeadOutlet />
+    <HeadOutlet @rendermode=InteractiveServer />
     <title>Cast Am Now</title>
 </head>
 
 <body>
-    <CastAmNow.UI.Routes @rendermode="@RenderMode.InteractiveWebAssembly" />
+    <CastAmNow.UI.Routes @rendermode="@RenderMode.InteractiveServer" />
     <script src="_framework/blazor.web.js"></script>
 </body>
 

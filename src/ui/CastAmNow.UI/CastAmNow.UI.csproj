@@ -15,5 +15,11 @@
 	  <PackageReference Include="Blazored.Modal" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web"/>
 	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions"/>
+	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\core\CastAmNow.Sdk\CastAmNow.Sdk.csproj" />
   </ItemGroup>
 </Project>
