@@ -1,3 +1,4 @@
+using CastAmNow.Sdk;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Services;
 
@@ -9,7 +10,17 @@ builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+builder.Services.AddHttpClient("DefectClient", cfg =>
+{
+    cfg.BaseAddress = new("https+http://api");
+});
 
+builder.Services.AddSingleton<IDefectApi>(sdk =>
+{
+    var clientFactory = sdk.GetRequiredService<IHttpClientFactory>();
+    var defectHttpClient = clientFactory.CreateClient("DefectClient");
+    return new DefectApi(defectHttpClient);
+});
 var app = builder.Build();
 
 app.MapDefaultEndpoints();

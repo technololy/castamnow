@@ -9,8 +9,12 @@
                       '$(TargetFramework)'=='net9.0-maccatalyst' Or
                       ('$(TargetFramework)'=='net9.0-windows10.0.19041.0' And $([MSBuild]::IsOSPlatform('windows')))">
     <!-- Aspire -->
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.1" />
-    
+    <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="9.3.1" />
+    <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="9.4.0" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.4.1" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.4.0" />
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.4.0" />
+    <PackageVersion Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <!-- Service defaults -->
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.4.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.3.1" />
@@ -22,7 +26,14 @@
     
     <!-- APIs -->
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
-
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.Annotations" Version="7.2.0" />
+    <PackageVersion Include="AutoMapper" Version="14.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
     <!-- Aspire integration testing -->
     <PackageVersion Include="Aspire.Hosting.Testing" Version="9.3.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
@@ -30,6 +41,20 @@
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
     
+    <!-- Dbs -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
+    <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
     <!-- Integration testing for .NET 9 -->
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
@@ -56,5 +81,11 @@
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageVersion Include="Bogus" Version="35.6.3" />
+    <PackageVersion Include="Refit" Version="8.0.0" />
+    <PackageVersion Include="Azure.Storage.Blobs" Version="12.23.0" />
+    <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="9.3.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.1" />
   </ItemGroup>
 </Project>
