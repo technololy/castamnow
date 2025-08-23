@@ -1,3 +1,5 @@
+using System.Net.Http.Headers;
+using Blazored.LocalStorage;
 using Blazored.Modal;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Services;
@@ -7,6 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddBlazoredModal();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddHttpClient<BackendApiService>(
+    client =>
+    {
+        client.BaseAddress = new Uri("https://localhost:7066/");
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    });
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
