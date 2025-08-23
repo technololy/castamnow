@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\CastAmNow.Sdk\CastAmNow.Sdk.csproj" />
+	  <PackageReference Include="Blazored.LocalStorage" />
 	  <PackageReference Include="Blazored.Modal" />
   </ItemGroup>
 </Project>

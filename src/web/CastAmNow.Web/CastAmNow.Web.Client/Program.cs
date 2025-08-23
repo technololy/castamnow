@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Blazored.Modal;
 using CastAmNow.Sdk;
 using CastAmNow.UI.Services;
@@ -11,4 +12,6 @@ builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddTransient<IDefectApi, DefectApi>();
 
 builder.Services.AddBlazoredModal();
+builder.Services.AddBlazoredLocalStorage();
+
 await builder.Build().RunAsync();
