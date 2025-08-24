@@ -1,7 +1,5 @@
 @page "/"
 
-@inject NavigationManager NavigationManager
-
 <div class="cast-container">
     <div class="cast-card">
         <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
@@ -17,7 +15,7 @@
             </div>
 
             <div class="form-group">
-                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" /> 
+                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" /> 
             </div>
 
             <div class="form-group">
@@ -94,13 +92,13 @@
 </div>
 
 @code {
-    private string? _newCast;
+    //private string? _newCast;
     private bool _isExpanded;
     private string _selectedCategory = "";
     private List<Cast> _casts = [];
     [CascadingParameter] public IModalService? Modal { get; set; }
     
-    private Report.Cast.HorrorSubmission _newHorror = new();
+    private HorrorSubmission _newHorror = new();
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
@@ -108,17 +106,20 @@
         {
             _newHorror.Attachments.Add(file.Name);
 
+            await using var stream = file.OpenReadStream(maxAllowedSize: 10_000_000);
+
             var buffer = new byte[file.Size];
-            await file.OpenReadStream().ReadAsync(buffer);
+            await stream.ReadAsync(buffer);
+
             var base64 = Convert.ToBase64String(buffer);
             var mimeType = file.ContentType;
 
             var url = $"data:{mimeType};base64,{base64}";
-            var isVideo = mimeType.StartsWith("video/");
-            _newHorror.Previews.Add(new Report.Cast.PreviewItem { Url = url, IsVideo = isVideo });
+            bool isVideo = mimeType.StartsWith("video/");
+            _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = isVideo });
         }
     }
-
+    
     private void SubmitHorror()
     {
         _newHorror.Category = _selectedCategory;
@@ -130,7 +131,7 @@
         Console.WriteLine($"Previews: {string.Join(", ", _newHorror.Previews.Select(p => p.Url))}");
 
         // Reset form
-        _newHorror = new Report.Cast.HorrorSubmission();
+        _newHorror = new HorrorSubmission();
         _selectedCategory = "";
         _isExpanded = false;
     }
@@ -150,40 +151,55 @@ DateTime.Now.AddDays(-1) }
     }
 
     //coming back to this
-    private async Task OpenModal()
-    {
-        if (Modal is null) return;
-
-        var options = new ModalOptions()
-        {
-            Size = ModalSize.ExtraLarge,
-            Position = ModalPosition.Middle,
-            Class = "blazored-modal"
-        };
-
-        var modal = Modal.Show<Report.Cast>("Cast Your Horror", options);
-        var result = await modal.Result;
-    }
+    // private async Task OpenModal()
+    // {
+    //     if (Modal is null) return;
+    //
+    //     var options = new ModalOptions()
+    //     {
+    //         Size = ModalSize.ExtraLarge,
+    //         Position = ModalPosition.Middle,
+    //         Class = "blazored-modal"
+    //     };
+    //
+    //     var modal = Modal.Show<Report.Cast>("Cast Your Horror", options);
+    //     var result = await modal.Result;
+    // }
 
     //and this
-    private void PostCast()
-    {
-        if (!string.IsNullOrWhiteSpace(_newCast))
-        {
-            _casts.Insert(0, new Cast
-            {
-                User = "👤 You",
-                Text = _newCast,
-                TimePosted = DateTime.Now
-            });
-            _newCast = string.Empty;
-        }
-    }
+    // private void PostCast()
+    // {
+    //     if (!string.IsNullOrWhiteSpace(_newCast))
+    //     {
+    //         _casts.Insert(0, new Cast
+    //         {
+    //             User = "👤 You",
+    //             Text = _newCast,
+    //             TimePosted = DateTime.Now
+    //         });
+    //         _newCast = string.Empty;
+    //     }
+    // }
 
     private class Cast
     {
         public string User { get; set; } = string.Empty;
         public string Text { get; set; } = string.Empty;
         public DateTime TimePosted { get; set; }
+    }
+    
+    public class HorrorSubmission
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+        public string Category { get; set; } = "";
+        public List<string> Attachments { get; set; } = new();
+        public List<PreviewItem> Previews { get; set; } = new();
+    }
+
+    public class PreviewItem
+    {
+        public string Url { get; set; } = "";
+        public bool IsVideo { get; set; }
     }
 }
