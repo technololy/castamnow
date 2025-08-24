@@ -12,6 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddBlazoredModal();
+builder.Services.AddServerSideBlazor()
+    .AddHubOptions(options =>
+    {
+        options.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10 MB
+    });
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
 builder.Services.AddHttpClient<BackendApiService>(
