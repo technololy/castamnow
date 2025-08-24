@@ -2,10 +2,10 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using Blazored.LocalStorage;
-using CastAmNow.UI.Models;
+using CastAmNow.Core.Abstractions;
+using CastAmNow.Core.Dtos;
 
-namespace CastAmNow.UI.Services;
+namespace CastAmNow.Core.Services;
 
 public class BackendApiService(HttpClient httpClient, ILocalStorageService localStorage)
 {

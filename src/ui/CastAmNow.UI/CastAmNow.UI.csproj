@@ -22,4 +22,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\core\CastAmNow.Sdk\CastAmNow.Sdk.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
 </Project>

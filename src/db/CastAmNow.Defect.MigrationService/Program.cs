@@ -2,13 +2,13 @@
 using CastAmNow.Defect.MigrationService;
 using Microsoft.EntityFrameworkCore;
 
-const string UseLocalArgs = "/local";
+const string useLocalArgs = "/local";
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing.AddSource(Worker.ActivitySourceName));
 
-if (args.Any(x => x == UseLocalArgs))
+if (args.Any(x => x == useLocalArgs))
 {
     builder.Services.AddDbContext<DefectDbContext>(options =>
     {

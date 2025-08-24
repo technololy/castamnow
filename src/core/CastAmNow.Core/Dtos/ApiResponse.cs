@@ -1,4 +1,4 @@
-namespace CastAmNow.UI.Models;
+namespace CastAmNow.Core.Dtos;
 public class ApiResponse<T>
 {
     public bool IsSuccess { get; set; }

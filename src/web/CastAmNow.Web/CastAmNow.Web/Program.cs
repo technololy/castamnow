@@ -1,9 +1,11 @@
 using System.Net.Http.Headers;
 using Blazored.LocalStorage;
 using Blazored.Modal;
+using CastAmNow.Core.Services;
 using CastAmNow.Sdk;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Services;
+using ILocalStorageService = CastAmNow.Core.Abstractions.ILocalStorageService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,7 @@ builder.AddServiceDefaults();
 builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
 builder.Services.AddHttpClient<BackendApiService>(
     client =>
     {
