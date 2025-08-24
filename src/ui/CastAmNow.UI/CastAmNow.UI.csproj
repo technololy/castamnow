@@ -20,4 +20,8 @@
 	  <PackageReference Include="Blazored.LocalStorage" />
 	  <PackageReference Include="Blazored.Modal" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
 </Project>

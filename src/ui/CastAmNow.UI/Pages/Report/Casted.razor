@@ -3,17 +3,83 @@
 @inject NavigationManager NavigationManager
 
 <div class="cast-container">
-    <div class="cast-prompt-card">
-        <div class="prompt-header">
-            <span class="prompt-text">What civic horror do you want to cast?</span>
+    <div class="cast-card">
+        <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
+
+        <div class="form-group">
+            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_newHorror.Title" @onfocus="() => _isExpanded = true" />
         </div>
 
-        <div class="prompt-footer">
-            <button @onclick="OpenModal" class="cast-btn">Cast Bad Road</button>
-            <button @onclick="OpenModal" class="cast-btn">Cast Run Down Places</button>
-            <button @onclick="OpenModal" class="cast-btn">Cast Something else</button>
-        </div>
+        @if (_isExpanded)
+        {
+            <div class="form-group">
+                <textarea class="cast-input-2" placeholder="Describe the defect and add media..." @bind="_newHorror.Description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" /> 
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="radio" name="Killer Roads" Value="Killer Roads"  />
+                    Killer Roads
+                </label>
+                <label>
+                    <input type="radio" name="Bad Buildings" Value="Bad Buildings" />
+                    Bad Buildings
+                </label>
+                <label>
+                    <input type="radio" name="Others" Value="Others"/>
+                    Others
+                </label>
+            </div>
+
+            @if (_newHorror.Previews.Count > 0)
+            {
+                <div class="preview-area">
+                    @foreach (var preview in _newHorror.Previews)
+                    {
+                        if (preview.IsVideo)
+                        {
+                            <video src="@preview.Url" controls width="150" style="margin-right:10px;"></video>
+                        }
+                        else
+                        {
+                            <img src="@preview.Url" alt="preview" width="150" style="margin-right:10px;" />
+                        }
+                    }
+                </div>
+            }
+
+            <div class="cast-actions">
+                <button class="cast-btn" @onclick="SubmitHorror" disabled="@string.IsNullOrWhiteSpace(_newHorror.Title)">
+                    Cast Am Now 🚨
+                </button>
+            </div>
+        }
     </div>
+    @* <div class="cast-box"> *@
+    @*     <textarea class="cast-input" *@
+    @*               placeholder="What do you want to cast now?" *@
+    @*               @bind="_newCast"></textarea> *@
+    @*     <div class="cast-actions"> *@
+    @*         <button class="cast-btn" @onclick="PostCast" disabled="@string.IsNullOrWhiteSpace(_newCast)"> *@
+    @*             Cast Now *@
+    @*         </button> *@
+    @*     </div> *@
+    @* </div> *@
+    @* <div class="cast-prompt-card"> *@
+    @*     <div class="prompt-header"> *@
+    @*         <span class="prompt-text">What civic horror do you want to cast?</span> *@
+    @*     </div> *@
+    @* *@
+    @*     <div class="prompt-footer"> *@
+    @*         <button @onclick="OpenModal" class="cast-btn">Cast Bad Road</button> *@
+    @*         <button @onclick="OpenModal" class="cast-btn">Cast Run Down Places</button> *@
+    @*         <button @onclick="OpenModal" class="cast-btn">Cast Something else</button> *@
+    @*     </div> *@
+    @* </div> *@
 
     <div class="cast-feed">
         @foreach (var cast in _casts)
@@ -29,8 +95,46 @@
 
 @code {
     private string? _newCast;
+    private bool _isExpanded;
+    private string _selectedCategory = "";
     private List<Cast> _casts = [];
     [CascadingParameter] public IModalService? Modal { get; set; }
+    
+    private Report.Cast.HorrorSubmission _newHorror = new();
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles())
+        {
+            _newHorror.Attachments.Add(file.Name);
+
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+            var base64 = Convert.ToBase64String(buffer);
+            var mimeType = file.ContentType;
+
+            var url = $"data:{mimeType};base64,{base64}";
+            var isVideo = mimeType.StartsWith("video/");
+            _newHorror.Previews.Add(new Report.Cast.PreviewItem { Url = url, IsVideo = isVideo });
+        }
+    }
+
+    private void SubmitHorror()
+    {
+        _newHorror.Category = _selectedCategory;
+
+        Console.WriteLine($"Title: {_newHorror.Title}");
+        Console.WriteLine($"Description: {_newHorror.Description}");
+        Console.WriteLine($"Category: {_newHorror.Category}");
+        Console.WriteLine($"Files: {string.Join(", ", _newHorror.Attachments)}");
+        Console.WriteLine($"Previews: {string.Join(", ", _newHorror.Previews.Select(p => p.Url))}");
+
+        // Reset form
+        _newHorror = new Report.Cast.HorrorSubmission();
+        _selectedCategory = "";
+        _isExpanded = false;
+    }
+
 
     protected override void OnInitialized()
     {
@@ -81,10 +185,5 @@ DateTime.Now.AddDays(-1) }
         public string User { get; set; } = string.Empty;
         public string Text { get; set; } = string.Empty;
         public DateTime TimePosted { get; set; }
-    }
-
-    void GoToCastPage()
-    {
-        NavigationManager.NavigateTo("/cast");
     }
 }
