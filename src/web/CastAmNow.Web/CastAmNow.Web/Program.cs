@@ -12,17 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddBlazoredModal();
-builder.Services.AddServerSideBlazor()
-    .AddHubOptions(options =>
-    {
-        options.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10 MB
-    });
+
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
-builder.Services.AddHttpClient<BackendApiService>(
+builder.Services.AddTransient<ICastedService, CastedService>();
+builder.Services.AddHttpClient<IBackendApiService, BackendApiService>(
     client =>
     {
-        client.BaseAddress = new Uri("https://localhost:7066/");
+        client.BaseAddress = new Uri("https://localhost:5111/");
         client.DefaultRequestHeaders.Accept.Clear();
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
     });

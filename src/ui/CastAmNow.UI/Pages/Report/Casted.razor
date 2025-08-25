@@ -1,4 +1,6 @@
 @page "/"
+@using CastAmNow.Core.Dtos.Defect
+@inject IDefectApi IDefectApi
 
 <div class="cast-container">
     <div class="cast-card">
@@ -20,17 +22,17 @@
 
             <div class="form-group">
                 <label>
-                    <input type="radio" name="Killer Roads" Value="Killer Roads"  />
-                    Killer Roads
-                </label>
+                    <input type="radio" name="Killer Roads" Value="Killer Roads" checked="@(_selectedCategory == "Killer Roads")"  />
+                        Killer Roads
+                    </label>
                 <label>
-                    <input type="radio" name="Bad Buildings" Value="Bad Buildings" />
-                    Bad Buildings
-                </label>
+                    <input type="radio" name="Bad Buildings" checked="@(_selectedCategory == "Bad Buildings")"/>
+                        Bad Buildings
+                    </label>
                 <label>
-                    <input type="radio" name="Others" Value="Others"/>
-                    Others
-                </label>
+                    <input type="radio" name="Others" checked="@(_selectedCategory == "Others")"/>
+                        Others
+                    </label>
             </div>
 
             @if (_newHorror.Previews.Count > 0)
@@ -77,28 +79,38 @@
     [CascadingParameter] public IModalService? Modal { get; set; }
     
     private HorrorSubmission _newHorror = new();
-
+    CreateDefectDto _createDefectDto = new();
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
         foreach (var file in e.GetMultipleFiles())
         {
             _newHorror.Attachments.Add(file.Name);
 
-            await using var stream = file.OpenReadStream(maxAllowedSize: 10_000_000);
-
-            var buffer = new byte[file.Size];
-            await stream.ReadAsync(buffer);
-
-            var base64 = Convert.ToBase64String(buffer);
             var mimeType = file.ContentType;
-
-            var url = $"data:{mimeType};base64,{base64}";
-            bool isVideo = mimeType.StartsWith("video/");
-            _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = isVideo });
+            if (mimeType.StartsWith("image/"))
+            {
+                // Use a resized image for preview
+                var resizedFile = await file.RequestImageFileAsync(mimeType, 300, 300);
+                await using var stream = resizedFile.OpenReadStream(maxAllowedSize: 5_000_000);
+                var buffer = new byte[resizedFile.Size];
+                await stream.ReadAsync(buffer);
+                var base64 = Convert.ToBase64String(buffer);
+                var url = $"data:{mimeType};base64,{base64}";
+                _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = false });
+            }
+            else if (mimeType.StartsWith("video/"))
+            {
+                await using var stream = file.OpenReadStream(maxAllowedSize: 20_000_000);
+                var buffer = new byte[file.Size];
+                await stream.ReadAsync(buffer);
+                var base64 = Convert.ToBase64String(buffer);
+                var url = $"data:{mimeType};base64,{base64}";
+                _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = true });
+            }
         }
     }
     
-    private void SubmitHorror()
+    private async Task SubmitHorror()
     {
         _newHorror.Category = _selectedCategory;
 
@@ -107,24 +119,47 @@
         Console.WriteLine($"Category: {_newHorror.Category}");
         Console.WriteLine($"Files: {string.Join(", ", _newHorror.Attachments)}");
         Console.WriteLine($"Previews: {string.Join(", ", _newHorror.Previews.Select(p => p.Url))}");
-
-        _newHorror = new HorrorSubmission();
-        _selectedCategory = "";
+        _newHorror.Attachments = await ConvertEachAttachmentToUrls(_newHorror.Attachments);
+        var submit = await CastedService.SubmitCastedDefectsAsync(_newHorror);
         _isExpanded = false;
     }
 
+    private async Task<List<string>> ConvertEachAttachmentToUrls(List<string> newHorrorAttachments)
+    {
+        List<string> urlsList = new();
+        foreach (var singleAttachment in newHorrorAttachments)
+        {
+            //await IDefectApi.DefectService. (singleAttachment);
+        }
 
-    protected override void OnInitialized()
+        return urlsList;
+    }
+
+
+    protected override async Task OnInitializedAsync()
     {
         // Dummy seed data
         _casts =
         [
-        new Cast { User = "👤 Ada", Text = "NEPA don take light again 😡", TimePosted = DateTime.Now.AddMinutes(-5) },
-new Cast { User = "👤 Bayo", Text = "Fuel price don high! 🚗⛽", TimePosted = DateTime.Now.AddHours(-1) },
-new Cast { User = "👤 Chika", Text = "Who get update for better job abeg? 🙏", TimePosted = DateTime.Now.AddHours(-3) },
-new Cast { User = "👤 Damilola", Text = "Traffic for 3rd Mainland Bridge na wah o 🚦", TimePosted =
+        new Cast { User = "👤 AddLibChanger", Text = "NEPA don take light again 😡", TimePosted = DateTime.Now.AddMinutes(-5) },
+new Cast { User = "👤 IndomitableBay", Text = "Fuel price don high! 🚗⛽", TimePosted = DateTime.Now.AddHours(-1) },
+new Cast { User = "👤 ChikaraciousGamble", Text = "Who get update for better job abeg? 🙏", TimePosted = DateTime.Now.AddHours(-3) },
+new Cast { User = "👤 RiverDamination", Text = "Traffic for 3rd Mainland Bridge na wah o 🚦", TimePosted =
 DateTime.Now.AddDays(-1) }
         ];
+        var defects = await CastedService.GetCastedDefectsAsync();
+        foreach (var defectQuery in defects)
+        {
+            var defect = new Cast
+            {
+                User = "👤 Anonymous",
+                Text = defectQuery.Description,
+                TimePosted = DateTime.Now,
+                
+            };
+            _casts.Add(defect);
+        }
+
     }
     
     private class Cast
