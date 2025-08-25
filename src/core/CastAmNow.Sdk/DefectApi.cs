@@ -1,10 +1,14 @@
-﻿using CastAmNow.Sdk.Abstractions;
+﻿using Azure.Storage.Blobs;
+using CastAmNow.Sdk.Abstractions;
+using CastAmNow.Sdk.Implementations;
 using Refit;
 
 namespace CastAmNow.Sdk
 {
-    public class DefectApi(HttpClient defectClient) : IDefectApi
+    public class DefectApi(HttpClient defectClient, BlobContainerClient? blobServiceClient = default) : IDefectApi
     {
-        public IDefectService DefectService { get; } = RestService.For<IDefectService>(defectClient);
+        public IDefectService DefectService => RestService.For<IDefectService>(defectClient);
+
+        public IStorageUploadService StorageUploadService => new MicrosoftStorageUploadService(blobServiceClient);
     }
 }
