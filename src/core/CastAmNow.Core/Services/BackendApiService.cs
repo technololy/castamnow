@@ -4,14 +4,17 @@ using System.Text;
 using System.Text.Json;
 using CastAmNow.Core.Abstractions;
 using CastAmNow.Core.Dtos;
+using CastAmNow.Core.Models;
 
 namespace CastAmNow.Core.Services;
 
-public class BackendApiService(HttpClient httpClient, ILocalStorageService localStorage)
+public class BackendApiService(HttpClient httpClient, ILocalStorageService localStorage) : IBackendApiService
 {
     private async Task SetAuthorizationHeader()
     {
-        var token = await localStorage.GetItemAsStringAsync("authToken");
+        //var token = await localStorage.GetItemAsStringAsync("authToken");
+        //to be used when we introduce authentication
+        var token = "";
 
         httpClient.DefaultRequestHeaders.Authorization = 
             !string.IsNullOrWhiteSpace(token) ? 
@@ -19,7 +22,7 @@ public class BackendApiService(HttpClient httpClient, ILocalStorageService local
                 null;
     }
     
-    public async Task<ApiResponse<TResponse>> GetAsync<TResponse>(string url)
+    public async Task<Response<TResponse>> GetAsync<TResponse>(string url)
     {
         await SetAuthorizationHeader();
         var response = await httpClient.GetAsync(url);
@@ -27,7 +30,7 @@ public class BackendApiService(HttpClient httpClient, ILocalStorageService local
         return await ProcessResponse<TResponse>(response);
     }
 
-    public async Task<ApiResponse<TResponse>> PostAsync<TResponse, TRequest>(string url, TRequest payload, bool isFileUpload = false,string contentType = "application/json", bool skipAuth = false)
+    public async Task<Response<TResponse>> PostAsync<TResponse, TRequest>(string url, TRequest payload, bool isFileUpload = false,string contentType = "application/json", bool skipAuth = false)
     {
         if (!skipAuth)
         {
@@ -59,7 +62,7 @@ public class BackendApiService(HttpClient httpClient, ILocalStorageService local
         return await ProcessResponse<TResponse>(response);
     }
 
-    public async Task<ApiResponse<T>> PutAsync<T, TRequest>(string url, TRequest payload)
+    public async Task<Response<T>> PutAsync<T, TRequest>(string url, TRequest payload)
     {
         await SetAuthorizationHeader();
         var response = await httpClient.PutAsJsonAsync(url, payload);
@@ -67,7 +70,7 @@ public class BackendApiService(HttpClient httpClient, ILocalStorageService local
         return await ProcessResponse<T>(response);
     }
 
-    public async Task<ApiResponse<T>> DeleteAsync<T>(string url)
+    public async Task<Response<T>> DeleteAsync<T>(string url)
     {
         await SetAuthorizationHeader();
         var response = await httpClient.DeleteAsync(url);
@@ -75,9 +78,9 @@ public class BackendApiService(HttpClient httpClient, ILocalStorageService local
         return await ProcessResponse<T>(response);
     }
 
-    private static async Task<ApiResponse<T>> ProcessResponse<T>(HttpResponseMessage response)
+    private static async Task<Response<T>> ProcessResponse<T>(HttpResponseMessage response)
     {
-        var apiResponse = new ApiResponse<T>
+        var apiResponse = new Response<T>
         {
             IsSuccess = response.IsSuccessStatusCode,
             Message = response.ReasonPhrase
