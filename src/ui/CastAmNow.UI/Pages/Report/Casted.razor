@@ -106,6 +106,12 @@
                 var base64 = Convert.ToBase64String(buffer);
                 var url = $"data:{mimeType};base64,{base64}";
                 _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = false });
+                
+                _createDefectDto.Attachments.Add(new AttachmentDto
+                {
+                    FileUrl = file.Name,
+                    FileType = FileTypeDto.Image
+                });
             }
             else if (mimeType.StartsWith("video/"))
             {
@@ -115,22 +121,35 @@
                 var base64 = Convert.ToBase64String(buffer);
                 var url = $"data:{mimeType};base64,{base64}";
                 _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = true });
+                
+                _createDefectDto.Attachments.Add(new AttachmentDto
+                {
+                    FileUrl = file.Name,
+                    FileType = FileTypeDto.Video
+                });
             }
         }
     }
     
     private async Task SubmitHorror()
     {
-        Console.WriteLine($"Title: {_newHorror.Title}");
-        Console.WriteLine($"Description: {_newHorror.Description}");
-        Console.WriteLine($"Category: {_newHorror.Category}");
-        Console.WriteLine($"Files: {string.Join(", ", _newHorror.Attachments)}");
-        Console.WriteLine($"Previews: {string.Join(", ", _newHorror.Previews.Select(p => p.Url))}");
-        _newHorror.Attachments = await ConvertEachAttachmentToUrls(_newHorror.Attachments);
+        await ConvertEachAttachmentToUrls();
         var submit = await CastedService.SubmitCastedDefectsAsync(_newHorror);
         _isExpanded = false;
     }
 
+    
+    private async Task ConvertEachAttachmentToUrls()
+    {
+        foreach (var attachment in _createDefectDto.Attachments)
+        {
+            var file = _selectedFiles.FirstOrDefault(f => f.Name == attachment.FileUrl);
+            if (file == null) continue;
+            var url = await UploadFileAsync(file);
+            attachment.FileUrl = url;
+        }
+    }
+    
     private async Task<List<string>> ConvertEachAttachmentToUrls(List<string> newHorrorAttachments)
     {
         List<string> urlsList = [];
@@ -154,12 +173,25 @@
         return urlsList;
     }
 
+    private async Task<string> UploadFileAsync(IBrowserFile file)
+    {
+        await using var stream = file.OpenReadStream(maxAllowedSize: 20_000_000);
+        var url = await DefectApi.StorageUploadService.UploadImage(
+            stream,
+            "user-folder",
+            file.Name,
+            (s, progress) => Console.WriteLine($"Upload progress: {progress}%"),
+            CancellationToken.None
+        );
+        return url;
+    }
+
     bool IfAllIsEmpty()
     {
         // Check if all relevant fields are empty or missing
         return string.IsNullOrWhiteSpace(_createDefectDto.Title)
             && string.IsNullOrWhiteSpace(_createDefectDto.Description)
-            && (_newHorror.Attachments == null || _newHorror.Attachments.Count == 0)
+            && _createDefectDto.Attachments.Count == 0
             && string.IsNullOrWhiteSpace(_newHorror.Category);
     }
 
