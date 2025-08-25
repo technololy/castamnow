@@ -1,19 +1,19 @@
 @page "/"
 @using CastAmNow.Core.Dtos.Defect
-@inject IDefectApi IDefectApi
+@inject IDefectApi DefectApi
 
 <div class="cast-container">
     <div class="cast-card">
         <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
 
         <div class="form-group">
-            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_newHorror.Title" @onfocus="() => _isExpanded = true" />
+            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_createDefectDto.Title" @onfocus="() => _isExpanded = true" />
         </div>
 
         @if (_isExpanded)
         {
             <div class="form-group">
-                <textarea class="cast-input-2" placeholder="Describe the defect and add media..." @bind="_newHorror.Description"></textarea>
+                <textarea class="cast-input-2" placeholder="Describe the defect and add media..." @bind="_createDefectDto.Description"></textarea>
             </div>
 
             <div class="form-group">
@@ -22,15 +22,15 @@
 
             <div class="form-group">
                 <label>
-                    <input type="radio" name="Killer Roads" Value="Killer Roads" checked="@(_selectedCategory == "Killer Roads")"  />
+                    <input type="radio" name="Killer Roads" Value="Killer Roads" checked="@(_newHorror.Category == "Killer Roads")"  />
                         Killer Roads
                     </label>
                 <label>
-                    <input type="radio" name="Bad Buildings" checked="@(_selectedCategory == "Bad Buildings")"/>
+                    <input type="radio" name="Bad Buildings" checked="@(_newHorror.Category == "Bad Buildings")"/>
                         Bad Buildings
                     </label>
                 <label>
-                    <input type="radio" name="Others" checked="@(_selectedCategory == "Others")"/>
+                    <input type="radio" name="Others" checked="@(_newHorror.Category == "Others")"/>
                         Others
                     </label>
             </div>
@@ -52,7 +52,7 @@
             }
 
             <div class="cast-actions">
-                <button class="cast-btn" @onclick="SubmitHorror" disabled="@string.IsNullOrWhiteSpace(_newHorror.Title)">
+                <button class="cast-btn" @onclick="SubmitHorror" disabled="@IfAllIsEmpty()">
                     Cast Am Now 🚨
                 </button>
             </div>
@@ -74,15 +74,18 @@
 @code {
     //private string? _newCast;
     private bool _isExpanded;
-    private string _selectedCategory = "";
     private List<Cast> _casts = [];
     [CascadingParameter] public IModalService? Modal { get; set; }
     
     private HorrorSubmission _newHorror = new();
     CreateDefectDto _createDefectDto = new();
+    private List<IBrowserFile> _selectedFiles = new();
+
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        foreach (var file in e.GetMultipleFiles())
+        _selectedFiles = e.GetMultipleFiles().ToList();
+
+        foreach (var file in _selectedFiles)
         {
             _newHorror.Attachments.Add(file.Name);
 
@@ -112,8 +115,6 @@
     
     private async Task SubmitHorror()
     {
-        _newHorror.Category = _selectedCategory;
-
         Console.WriteLine($"Title: {_newHorror.Title}");
         Console.WriteLine($"Description: {_newHorror.Description}");
         Console.WriteLine($"Category: {_newHorror.Category}");
@@ -126,15 +127,35 @@
 
     private async Task<List<string>> ConvertEachAttachmentToUrls(List<string> newHorrorAttachments)
     {
-        List<string> urlsList = new();
-        foreach (var singleAttachment in newHorrorAttachments)
+        List<string> urlsList = [];
+        foreach (var fileName in newHorrorAttachments)
         {
-            //await IDefectApi.DefectService. (singleAttachment);
+            var file = _selectedFiles.FirstOrDefault(f => f.Name == fileName);
+            if (file != null)
+            {
+                await using var stream = file.OpenReadStream(maxAllowedSize: 20_000_000);
+                var url = await DefectApi.StorageUploadService.UploadImage(
+                    stream,
+                    "user-folder",
+                    file.Name,
+                    (s, progress) => Console.WriteLine($"Upload progress: {progress}%"),
+                    CancellationToken.None
+                );
+                urlsList.Add(url);
+            }
         }
 
         return urlsList;
     }
 
+    bool IfAllIsEmpty()
+    {
+        // Check if all relevant fields are empty or missing
+        return string.IsNullOrWhiteSpace(_createDefectDto.Title)
+            && string.IsNullOrWhiteSpace(_createDefectDto.Description)
+            && (_newHorror.Attachments == null || _newHorror.Attachments.Count == 0)
+            && string.IsNullOrWhiteSpace(_newHorror.Category);
+    }
 
     protected override async Task OnInitializedAsync()
     {
