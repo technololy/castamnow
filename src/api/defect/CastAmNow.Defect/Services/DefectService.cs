@@ -6,7 +6,7 @@ using CastAmNow.Defect.API.Abstractions;
 
 namespace CastAmNow.Defect.API.Services
 {
-    public class DefectService(IRepository<Domain.Defect.Defect> repository, IMapper mapper, ILogger<DefectService> logger) : IDefectService
+    internal class DefectService(IRepository<Domain.Defect.Defect> repository, IMapper mapper, ILogger<DefectService> logger) : IDefectService
     {
         public async Task<bool> CreateDefect(CreateDefectDto createDefectDto)
         {
