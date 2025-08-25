@@ -19,21 +19,27 @@
             <div class="form-group">
                 <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" /> 
             </div>
-
-            <div class="form-group">
+            @foreach (var category in Enum.GetValues<CategoryDto>().Where(c => c != CategoryDto.None))
+            {
                 <label>
-                    <input type="radio" name="Killer Roads" Value="Killer Roads" checked="@(_newHorror.Category == "Killer Roads")"  />
-                        Killer Roads
-                    </label>
-                <label>
-                    <input type="radio" name="Bad Buildings" checked="@(_newHorror.Category == "Bad Buildings")"/>
-                        Bad Buildings
-                    </label>
-                <label>
-                    <input type="radio" name="Others" checked="@(_newHorror.Category == "Others")"/>
-                        Others
-                    </label>
-            </div>
+                    <input type="radio" name="category" value="@category" @onchange="() => _createDefectDto.Category = category" checked="@(_createDefectDto.Category == category)" />
+                    @category.ToString()
+                </label>
+            }
+            @* <div class="form-group"> *@
+            @*     <label> *@
+            @*         <input type="radio" name="Killer Roads" Value="Killer Roads" checked="@(_newHorror.Category == "Killer Roads")"  /> *@
+            @*             Killer Roads *@
+            @*         </label> *@
+            @*     <label> *@
+            @*         <input type="radio" name="Bad Buildings" checked="@(_newHorror.Category == "Bad Buildings")"/> *@
+            @*             Bad Buildings *@
+            @*         </label> *@
+            @*     <label> *@
+            @*         <input type="radio" name="Others" checked="@(_newHorror.Category == "Others")"/> *@
+            @*             Others *@
+            @*         </label> *@
+            @* </div> *@
 
             @if (_newHorror.Previews.Count > 0)
             {
