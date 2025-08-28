@@ -1,7 +1,6 @@
 @page "/"
 @using CastAmNow.Core.Dtos.Defect
 @using Microsoft.Extensions.Logging
-@using CastAmNow.UI.Components
 @inject IDefectApi DefectApi
 @inject ILogger<Casted> Logger
 
@@ -332,7 +331,6 @@
             StateHasChanged();
         }
     }
-
 
     private async Task ConvertEachAttachmentToUrls()
     {
