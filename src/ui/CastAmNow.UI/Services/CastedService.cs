@@ -1,27 +1,26 @@
-using CastAmNow.Core.Models;
-using CastAmNow.Core.Services;
-using CastAmNow.UI.Pages.Report;
+using CastAmNow.Core.Dtos.Defect;
+using CastAmNow.Sdk;
 
 namespace CastAmNow.UI.Services;
 
-public class CastedService(IBackendApiService api) : ICastedService
+public class CastedService(IDefectApi api) : ICastedService
 {
-    public async Task<Response<bool>> SubmitCastedDefectsAsync(Casted.HorrorSubmission horrorSubmission)
+    public async Task<DefectDto> SubmitCastedDefectsAsync(CreateDefectDto createDefectDto)
     {
-        var response = await api.PostAsync<bool, Casted.HorrorSubmission>("api/CreateDefect",horrorSubmission,true);
-        return response;
+        var response = await api.DefectService.CreateDefectAsync(createDefectDto);
+        return response.Content?.Data ?? new DefectDto();
     }
 
-    public async Task<List<DefectQuery>> GetCastedDefectsAsync()
+    public async Task<IEnumerable<DefectDto>> GetCastedDefectsAsync()
     {
-        var response = await api.GetAsync<List<DefectQuery>>("api/GetDefects");
-        return response.Data ?? [];    
+        var response2 = await api.DefectService.GetDefectAsync();
+        return response2.Content?.Data ?? [];
     }
 }
 
 public interface ICastedService
 {
-    Task<Response<bool>> SubmitCastedDefectsAsync(Casted.HorrorSubmission horrorSubmission);
-    
-    Task<List<DefectQuery>> GetCastedDefectsAsync();
+    public Task<DefectDto> SubmitCastedDefectsAsync(CreateDefectDto createDefectDto);
+
+    public Task<IEnumerable<DefectDto>> GetCastedDefectsAsync();
 }

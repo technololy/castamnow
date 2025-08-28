@@ -7,22 +7,25 @@
         <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
 
         <div class="form-group">
-            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_createDefectDto.Title" @onfocus="() => _isExpanded = true" />
+            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_createDefectDto.Title"
+                @onfocus="() => _isExpanded = true" />
         </div>
 
         @if (_isExpanded)
         {
             <div class="form-group">
-                <textarea class="cast-input-2" placeholder="Describe the defect and add media..." @bind="_createDefectDto.Description"></textarea>
+                <textarea class="cast-input-2" placeholder="Describe the defect and add media..."
+                    @bind="_createDefectDto.Description"></textarea>
             </div>
 
             <div class="form-group">
-                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" /> 
+                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" />
             </div>
             @foreach (var category in Enum.GetValues<CategoryDto>().Where(c => c != CategoryDto.None))
             {
                 <label>
-                    <input type="radio" name="category" value="@category" @onchange="() => _createDefectDto.Category = category" checked="@(_createDefectDto.Category == category)" />
+                    <input type="radio" name="category" value="@category" @onchange="() => _createDefectDto.Category = category"
+                        checked="@(_createDefectDto.Category == category)" />
                     @category.ToString()
                 </label>
             }
@@ -52,8 +55,9 @@
                         }
                         else
                         {
-                            <img src="@preview.Url" alt="preview" style="width:150px; height:auto; margin-right:10px;" />                        }
+                            <img src="@preview.Url" alt="preview" style="width:150px; height:auto; margin-right:10px;" />
                         }
+                    }
                 </div>
             }
 
@@ -77,12 +81,13 @@
     </div>
 </div>
 
-@code {
+@code
+{
     //private string? _newCast;
     private bool _isExpanded;
     private List<Cast> _casts = [];
     [CascadingParameter] public IModalService? Modal { get; set; }
-    
+
     private HorrorSubmission _newHorror = new();
     CreateDefectDto _createDefectDto = new();
     private List<IBrowserFile> _selectedFiles = new();
@@ -106,7 +111,7 @@
                 var base64 = Convert.ToBase64String(buffer);
                 var url = $"data:{mimeType};base64,{base64}";
                 _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = false });
-                
+
                 _createDefectDto.Attachments.Add(new AttachmentDto
                 {
                     FileUrl = file.Name,
@@ -121,7 +126,7 @@
                 var base64 = Convert.ToBase64String(buffer);
                 var url = $"data:{mimeType};base64,{base64}";
                 _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = true });
-                
+
                 _createDefectDto.Attachments.Add(new AttachmentDto
                 {
                     FileUrl = file.Name,
@@ -130,15 +135,15 @@
             }
         }
     }
-    
+
     private async Task SubmitHorror()
     {
         await ConvertEachAttachmentToUrls();
-        var submit = await CastedService.SubmitCastedDefectsAsync(_newHorror);
+        var submit = await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
         _isExpanded = false;
     }
 
-    
+
     private async Task ConvertEachAttachmentToUrls()
     {
         foreach (var attachment in _createDefectDto.Attachments)
@@ -149,39 +154,16 @@
             attachment.FileUrl = url;
         }
     }
-    
-    private async Task<List<string>> ConvertEachAttachmentToUrls(List<string> newHorrorAttachments)
-    {
-        List<string> urlsList = [];
-        foreach (var fileName in newHorrorAttachments)
-        {
-            var file = _selectedFiles.FirstOrDefault(f => f.Name == fileName);
-            if (file != null)
-            {
-                await using var stream = file.OpenReadStream(maxAllowedSize: 20_000_000);
-                var url = await DefectApi.StorageUploadService.UploadImage(
-                    stream,
-                    "user-folder",
-                    file.Name,
-                    (s, progress) => Console.WriteLine($"Upload progress: {progress}%"),
-                    CancellationToken.None
-                );
-                urlsList.Add(url);
-            }
-        }
-
-        return urlsList;
-    }
 
     private async Task<string> UploadFileAsync(IBrowserFile file)
     {
         await using var stream = file.OpenReadStream(maxAllowedSize: 20_000_000);
         var url = await DefectApi.StorageUploadService.UploadImage(
-            stream,
-            "user-folder",
-            file.Name,
-            (s, progress) => Console.WriteLine($"Upload progress: {progress}%"),
-            CancellationToken.None
+        stream,
+        "user-folder",
+        file.Name,
+        (s, progress) => Console.WriteLine($"Upload progress: {progress}%"),
+        CancellationToken.None
         );
         return url;
     }
@@ -190,9 +172,9 @@
     {
         // Check if all relevant fields are empty or missing
         return string.IsNullOrWhiteSpace(_createDefectDto.Title)
-            && string.IsNullOrWhiteSpace(_createDefectDto.Description)
-            && _createDefectDto.Attachments.Count == 0
-            && string.IsNullOrWhiteSpace(_newHorror.Category);
+        && string.IsNullOrWhiteSpace(_createDefectDto.Description)
+        && _createDefectDto.Attachments.Count == 0
+        && string.IsNullOrWhiteSpace(_newHorror.Category);
     }
 
     protected override async Task OnInitializedAsync()
@@ -202,7 +184,8 @@
         [
         new Cast { User = "👤 AddLibChanger", Text = "NEPA don take light again 😡", TimePosted = DateTime.Now.AddMinutes(-5) },
 new Cast { User = "👤 IndomitableBay", Text = "Fuel price don high! 🚗⛽", TimePosted = DateTime.Now.AddHours(-1) },
-new Cast { User = "👤 ChikaraciousGamble", Text = "Who get update for better job abeg? 🙏", TimePosted = DateTime.Now.AddHours(-3) },
+new Cast { User = "👤 ChikaraciousGamble", Text = "Who get update for better job abeg? 🙏", TimePosted =
+DateTime.Now.AddHours(-3) },
 new Cast { User = "👤 RiverDamination", Text = "Traffic for 3rd Mainland Bridge na wah o 🚦", TimePosted =
 DateTime.Now.AddDays(-1) }
         ];
@@ -214,20 +197,20 @@ DateTime.Now.AddDays(-1) }
                 User = "👤 Anonymous",
                 Text = defectQuery.Description,
                 TimePosted = DateTime.Now,
-                
+
             };
             _casts.Add(defect);
         }
 
     }
-    
+
     private class Cast
     {
         public string User { get; set; } = string.Empty;
         public string Text { get; set; } = string.Empty;
         public DateTime TimePosted { get; set; }
     }
-    
+
     public class HorrorSubmission
     {
         public string Title { get; set; } = "";
