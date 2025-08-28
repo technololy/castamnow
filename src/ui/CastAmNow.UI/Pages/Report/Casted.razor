@@ -29,20 +29,7 @@
                     @category.ToString()
                 </label>
             }
-            @* <div class="form-group"> *@
-            @*     <label> *@
-            @*         <input type="radio" name="Killer Roads" Value="Killer Roads" checked="@(_newHorror.Category == "Killer Roads")"  /> *@
-            @*             Killer Roads *@
-            @*         </label> *@
-            @*     <label> *@
-            @*         <input type="radio" name="Bad Buildings" checked="@(_newHorror.Category == "Bad Buildings")"/> *@
-            @*             Bad Buildings *@
-            @*         </label> *@
-            @*     <label> *@
-            @*         <input type="radio" name="Others" checked="@(_newHorror.Category == "Others")"/> *@
-            @*             Others *@
-            @*         </label> *@
-            @* </div> *@
+
 
             @if (_newHorror.Previews.Count > 0)
             {
@@ -62,7 +49,7 @@
             }
 
             <div class="cast-actions">
-                <button class="cast-btn" @onclick="SubmitHorror" disabled="@IfAllIsEmpty()">
+                <button class="cast-btn" @onclick="SubmitCastedDefects" disabled="@IfAllIsEmpty()">
                     Cast Am Now 🚨
                 </button>
             </div>
@@ -70,12 +57,12 @@
     </div>
 
     <div class="cast-feed">
-        @foreach (var cast in _casts)
+        @foreach (var cast in _defectDtos)
         {
             <div class="cast-item">
-                <div class="cast-user">@cast.User</div>
-                <div class="cast-text">@cast.Text</div>
-                <div class="cast-time">@cast.TimePosted.ToString("MMM d, h:mm tt")</div>
+                <div class="cast-user">@cast.Title</div>
+                <div class="cast-text">@cast.Description</div>
+                <div class="cast-time">@cast.CreatedAt.ToString("MMM d, h:mm tt")</div>
             </div>
         }
     </div>
@@ -85,7 +72,7 @@
 {
     //private string? _newCast;
     private bool _isExpanded;
-    private List<Cast> _casts = [];
+    private IEnumerable<DefectDto> _defectDtos = [];
     [CascadingParameter] public IModalService? Modal { get; set; }
 
     private HorrorSubmission _newHorror = new();
@@ -136,10 +123,10 @@
         }
     }
 
-    private async Task SubmitHorror()
+    private async Task SubmitCastedDefects()
     {
         await ConvertEachAttachmentToUrls();
-        var submit = await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
+        await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
         _isExpanded = false;
     }
 
@@ -179,42 +166,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Dummy seed data
-        _casts =
-        [
-        new Cast { User = "👤 AddLibChanger", Text = "NEPA don take light again 😡", TimePosted = DateTime.Now.AddMinutes(-5) },
-new Cast { User = "👤 IndomitableBay", Text = "Fuel price don high! 🚗⛽", TimePosted = DateTime.Now.AddHours(-1) },
-new Cast { User = "👤 ChikaraciousGamble", Text = "Who get update for better job abeg? 🙏", TimePosted =
-DateTime.Now.AddHours(-3) },
-new Cast { User = "👤 RiverDamination", Text = "Traffic for 3rd Mainland Bridge na wah o 🚦", TimePosted =
-DateTime.Now.AddDays(-1) }
-        ];
-        var defects = await CastedService.GetCastedDefectsAsync();
-        foreach (var defectQuery in defects)
-        {
-            var defect = new Cast
-            {
-                User = "👤 Anonymous",
-                Text = defectQuery.Description,
-                TimePosted = DateTime.Now,
-
-            };
-            _casts.Add(defect);
-        }
-
-    }
-
-    private class Cast
-    {
-        public string User { get; set; } = string.Empty;
-        public string Text { get; set; } = string.Empty;
-        public DateTime TimePosted { get; set; }
+        _defectDtos = await CastedService.GetCastedDefectsAsync();
     }
 
     public class HorrorSubmission
     {
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
         public string Category { get; set; } = "";
         public List<string> Attachments { get; set; } = new();
         public List<PreviewItem> Previews { get; set; } = new();
