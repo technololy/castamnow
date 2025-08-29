@@ -310,7 +310,7 @@
                 string.Join(", ", _createDefectDto.Attachments.Select(a => a.FileUrl)));
 
             SetLocationToCreatedDefectDto();
-            await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
+            var response = await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
             Logger.LogInformation("Successfully submitted defect");
             
             _isExpanded = false;

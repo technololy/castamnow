@@ -13,12 +13,12 @@ namespace CastAmNow.Sdk.Abstractions
 
         [Post("/api/Defect")]
         Task<ApiResponse<Response<DefectDto>>> CreateDefectAsync(
-            [Body] CreateDefectDto ameboDto);
+            [Body] CreateDefectDto defectDto);
 
         [Put("/api/Defect/{id}")]
         Task<ApiResponse<Response<DefectDto>>> UpdateDefectAsync(
             long id,
-            [Body] DefectDto ameboDto);
+            [Body] DefectDto defectDto);
 
         [Delete("/api/Defect/{id}")]
         Task<ApiResponse<Response<DefectDto>>> DeleteDefectAsync(long id);
