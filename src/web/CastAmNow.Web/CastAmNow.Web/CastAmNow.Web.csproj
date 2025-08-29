@@ -27,5 +27,6 @@
     <ProjectReference Include="..\..\..\ui\CastAmNow.UI\CastAmNow.UI.csproj" />
     <ProjectReference Include="..\CastAmNow.Web.Client\CastAmNow.Web.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+	<PackageReference Include="Aspire.Azure.Storage.Blobs" />
   </ItemGroup>
 </Project>

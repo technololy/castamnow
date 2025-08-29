@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using CastAmNow.Sdk;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Services;
@@ -10,6 +11,8 @@ builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.AddAzureBlobContainerClient("files");
 builder.Services.AddHttpClient("DefectClient", cfg =>
 {
     cfg.BaseAddress = new("https+http://api");
@@ -18,8 +21,9 @@ builder.Services.AddHttpClient("DefectClient", cfg =>
 builder.Services.AddSingleton<IDefectApi>(sdk =>
 {
     var clientFactory = sdk.GetRequiredService<IHttpClientFactory>();
+    var blobContainerClient = sdk.GetRequiredService<BlobContainerClient>();
     var defectHttpClient = clientFactory.CreateClient("DefectClient");
-    return new DefectApi(defectHttpClient);
+    return new DefectApi(defectHttpClient,blobContainerClient);
 });
 var app = builder.Build();
 
