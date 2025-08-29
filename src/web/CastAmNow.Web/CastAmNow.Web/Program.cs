@@ -15,6 +15,7 @@ builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddBlazoredModal();
 
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazorBootstrap();
 builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
 builder.Services.AddTransient<ICastedService, CastedService>();
 builder.Services.AddHttpClient<IBackendApiService, BackendApiService>(

@@ -1,6 +1,5 @@
 @page "/"
 @using CastAmNow.Core.Dtos.Defect
-@using CastAmNow.UI.Components
 @using Microsoft.Extensions.Logging
 @inject IDefectApi DefectApi
 @inject ILogger<Casted> Logger
@@ -220,11 +219,13 @@
     private bool _isExpanded;
     private bool _isLoading;
     private IEnumerable<DefectDto> _defectDtos = [];
-    [CascadingParameter] public IModalService? Modal { get; set; }
-
     private PreviewingModel _itemsToPreview = new();
     CreateDefectDto _createDefectDto = new();
     private List<IBrowserFile> _selectedFiles = [];
+
+    [CascadingParameter] public IModalService? Modal { get; set; }
+    [Inject] protected ToastService ToastService { get; set; } = default!;
+    
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
@@ -323,7 +324,7 @@
             }
             else
             {
-                
+                ToastService.Notify(new(ToastType.Danger, $"Error submitting defect"));
             }
             
 

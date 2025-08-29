@@ -18,7 +18,7 @@ namespace CastAmNow.Mobile
 
             // Add device-specific services used by the CastAmNow.Mobile.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-
+            builder.Services.AddBlazorBootstrap();
             builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG

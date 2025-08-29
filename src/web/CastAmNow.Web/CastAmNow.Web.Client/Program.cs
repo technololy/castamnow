@@ -10,6 +10,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 // Register the FormFactor service
 builder.Services.AddTransient<IFormFactor, FormFactor>();
 builder.Services.AddTransient<IDefectApi, DefectApi>();
+builder.Services.AddBlazorBootstrap();
 
 builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredLocalStorage();
