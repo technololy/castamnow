@@ -1,5 +1,6 @@
 @page "/"
 @using CastAmNow.Core.Dtos.Defect
+@using CastAmNow.UI.Components
 @using Microsoft.Extensions.Logging
 @inject IDefectApi DefectApi
 @inject ILogger<Casted> Logger
@@ -146,10 +147,10 @@
             }
 
 
-            @if (_newHorror.Previews.Count > 0)
+            @if (_itemsToPreview.Previews.Count > 0)
             {
                 <div class="preview-area">
-                    @foreach (var preview in _newHorror.Previews)
+                    @foreach (var preview in _itemsToPreview.Previews)
                     {
                         if (preview.IsVideo)
                         {
@@ -221,9 +222,9 @@
     private IEnumerable<DefectDto> _defectDtos = [];
     [CascadingParameter] public IModalService? Modal { get; set; }
 
-    private HorrorSubmission _newHorror = new();
+    private PreviewingModel _itemsToPreview = new();
     CreateDefectDto _createDefectDto = new();
-    private List<IBrowserFile> _selectedFiles = new();
+    private List<IBrowserFile> _selectedFiles = [];
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
@@ -231,7 +232,7 @@
 
         foreach (var file in _selectedFiles)
         {
-            _newHorror.Attachments.Add(file.Name);
+            _itemsToPreview.Attachments.Add(file.Name);
 
             var mimeType = file.ContentType;
             if (mimeType.StartsWith("image/"))
@@ -243,7 +244,7 @@
                 await stream.ReadAsync(buffer);
                 var base64 = Convert.ToBase64String(buffer);
                 var url = $"data:{mimeType};base64,{base64}";
-                _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = false });
+                _itemsToPreview.Previews.Add(new PreviewItem { Url = url, IsVideo = false });
 
                 _createDefectDto.Attachments.Add(new AttachmentDto
                 {
@@ -258,7 +259,7 @@
                 await stream.ReadAsync(buffer);
                 var base64 = Convert.ToBase64String(buffer);
                 var url = $"data:{mimeType};base64,{base64}";
-                _newHorror.Previews.Add(new PreviewItem { Url = url, IsVideo = true });
+                _itemsToPreview.Previews.Add(new PreviewItem { Url = url, IsVideo = true });
 
                 _createDefectDto.Attachments.Add(new AttachmentDto
                 {
@@ -311,13 +312,11 @@
             await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
             Logger.LogInformation("Successfully submitted defect");
             
-            // Reset the form
             _isExpanded = false;
-            _createDefectDto = new();
-            _newHorror = new();
+            _createDefectDto = new CreateDefectDto();
+            _itemsToPreview = new PreviewingModel();
             _selectedFiles.Clear();
 
-            // Reload the defects list
             await LoadDefectsAsync();
         }
         catch (Exception ex)
@@ -425,9 +424,8 @@
         await LoadDefectsAsync();
     }
 
-    public class HorrorSubmission
+    public class PreviewingModel
     {
-        public string Category { get; set; } = "";
         public List<string> Attachments { get; set; } = new();
         public List<PreviewItem> Previews { get; set; } = new();
     }
