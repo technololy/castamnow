@@ -309,6 +309,7 @@
                 _createDefectDto.Category,
                 string.Join(", ", _createDefectDto.Attachments.Select(a => a.FileUrl)));
 
+            SetLocationToCreatedDefectDto();
             await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
             Logger.LogInformation("Successfully submitted defect");
             
@@ -329,6 +330,13 @@
             _isLoading = false;
             StateHasChanged();
         }
+    }
+
+    private void SetLocationToCreatedDefectDto()
+    {
+        _createDefectDto.Latitude = "11.111";
+        _createDefectDto.Longitude = "22.222";
+        _createDefectDto.Location = "coming soon";
     }
 
     private async Task ConvertEachAttachmentToUrls()
