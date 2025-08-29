@@ -39,7 +39,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defect.API", "src
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "defect", "defect", "{52F20D0E-E4B8-4C92-BB7C-21FE6A8F135C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defect.IntegrationTests", "test\api\defect\CastAmNow.Defect.IntegrationTests\CastAmNow.Defect.IntegrationTests.csproj", "{DB303676-9564-49F7-AF04-F425F4C1535B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.Defect.API.IntegrationTests", "test\api\defect\CastAmNow.Defect.API.IntegrationTests\CastAmNow.Defect.API.IntegrationTests.csproj", "{DB303676-9564-49F7-AF04-F425F4C1535B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CastAmNow.UI", "src\ui\CastAmNow.UI\CastAmNow.UI.csproj", "{6EBBFD4B-738F-3EE9-9538-9C5FB0C20526}"
 EndProject
