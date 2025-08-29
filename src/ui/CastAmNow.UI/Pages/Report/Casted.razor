@@ -288,11 +288,11 @@
     private async Task SubmitCastedDefects()
     {
         if (_isLoading) return;
-
+        
         try 
         {
             _isLoading = true;
-            StateHasChanged(); // Ensure the loading spinner shows immediately
+            StateHasChanged();
 
             Logger.LogInformation("Starting defect submission process");
             Logger.LogInformation("Converting attachments to URLs...");
