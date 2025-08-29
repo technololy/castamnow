@@ -311,14 +311,22 @@
 
             SetLocationToCreatedDefectDto();
             var response = await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
-            Logger.LogInformation("Successfully submitted defect");
-            
-            _isExpanded = false;
-            _createDefectDto = new CreateDefectDto();
-            _itemsToPreview = new PreviewingModel();
-            _selectedFiles.Clear();
+            if (response is not null)
+            {
+                Logger.LogInformation("Successfully submitted defect");
+                _isExpanded = false;
+                _createDefectDto = new CreateDefectDto();
+                _itemsToPreview = new PreviewingModel();
+                _selectedFiles.Clear();
 
-            await LoadDefectsAsync();
+                await LoadDefectsAsync();
+            }
+            else
+            {
+                
+            }
+            
+
         }
         catch (Exception ex)
         {
