@@ -11,11 +11,18 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Blazor.Bootstrap" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
 	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\CastAmNow.Sdk\CastAmNow.Sdk.csproj" />
+	  <PackageReference Include="Blazored.LocalStorage" />
+	  <PackageReference Include="Blazored.Modal" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

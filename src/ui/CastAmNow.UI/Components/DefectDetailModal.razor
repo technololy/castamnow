@@ -1,0 +1,31 @@
+@using CastAmNow.Core.Dtos.Defect
+
+<div class="modal-content">
+    <div class="modal-title">@Defect.Title</div>
+    <div class="modal-description">@Defect.Description</div>
+    
+    <div class="modal-attachments">
+        @foreach (var attachment in Defect.Attachments)
+        {
+            @if (attachment.FileType == FileTypeDto.Image)
+            {
+                <img src="@attachment.FileUrl" alt="Attachment" class="modal-attachment" />
+            }
+            else if (attachment.FileType == FileTypeDto.Video)
+            {
+                <video src="@attachment.FileUrl" controls class="modal-attachment">
+                    Your browser does not support the video tag.
+                </video>
+            }
+        }
+    </div>
+    
+    <div class="modal-time">
+        Reported on @Defect.CreatedAt.ToString("MMMM d, yyyy") at @Defect.CreatedAt.ToString("h:mm tt")
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public DefectDto Defect { get; set; } = default!;
+}

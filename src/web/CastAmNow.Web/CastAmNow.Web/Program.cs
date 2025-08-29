@@ -1,12 +1,30 @@
+using System.Net.Http.Headers;
 using Azure.Storage.Blobs;
+using Blazored.LocalStorage;
+using Blazored.Modal;
+using CastAmNow.Core.Services;
 using CastAmNow.Sdk;
 using CastAmNow.UI.Services;
 using CastAmNow.Web.Services;
+using ILocalStorageService = CastAmNow.Core.Abstractions.ILocalStorageService;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 builder.Services.AddTransient<IFormFactor, FormFactor>();
+builder.Services.AddBlazoredModal();
+
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazorBootstrap();
+builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
+builder.Services.AddTransient<ICastedService, CastedService>();
+builder.Services.AddHttpClient<IBackendApiService, BackendApiService>(
+    client =>
+    {
+        client.BaseAddress = new Uri("https://localhost:5111/");
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+    });
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
@@ -23,7 +41,7 @@ builder.Services.AddSingleton<IDefectApi>(sdk =>
     var clientFactory = sdk.GetRequiredService<IHttpClientFactory>();
     var blobContainerClient = sdk.GetRequiredService<BlobContainerClient>();
     var defectHttpClient = clientFactory.CreateClient("DefectClient");
-    return new DefectApi(defectHttpClient,blobContainerClient);
+    return new DefectApi(defectHttpClient, blobContainerClient);
 });
 var app = builder.Build();
 

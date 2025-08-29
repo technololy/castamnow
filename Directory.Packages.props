@@ -3,11 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <MauiVersion>9.0.30</MauiVersion>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net9.0' Or 
-                      '$(TargetFramework)'=='net9.0-android' Or 
-                      '$(TargetFramework)'=='net9.0-ios' Or 
-                      '$(TargetFramework)'=='net9.0-maccatalyst' Or
-                      ('$(TargetFramework)'=='net9.0-windows10.0.19041.0' And $([MSBuild]::IsOSPlatform('windows')))">
+  <ItemGroup Condition="'$(TargetFramework)'=='net9.0' Or &#xA;                      '$(TargetFramework)'=='net9.0-android' Or &#xA;                      '$(TargetFramework)'=='net9.0-ios' Or &#xA;                      '$(TargetFramework)'=='net9.0-maccatalyst' Or&#xA;                      ('$(TargetFramework)'=='net9.0-windows10.0.19041.0' And $([MSBuild]::IsOSPlatform('windows')))">
     <!-- Aspire -->
     <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="9.3.1" />
     <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="9.4.0" />
@@ -15,6 +11,7 @@
     <PackageVersion Include="Aspire.Hosting.Redis" Version="9.4.0" />
     <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.4.0" />
     <PackageVersion Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
+    <PackageVersion Include="Blazor.Bootstrap" Version="3.4.0" />
     <!-- Service defaults -->
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.4.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.3.1" />
@@ -23,7 +20,6 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0" />
-    
     <!-- APIs -->
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
@@ -40,12 +36,11 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
-    
     <!-- Dbs -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
     <PackageVersion Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
-     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -67,16 +62,13 @@
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.4" />
-	  <PackageVersion Include="Moq" Version="4.20.72" />
-
+    <PackageVersion Include="Moq" Version="4.20.72" />
     <!-- Aspire integration testing for .NET 9 -->
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.8" />
-
     <PackageVersion Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
-    
     <PackageVersion Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
@@ -87,5 +79,9 @@
     <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="9.3.1" />
     <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="9.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageVersion Include="Blazored.Modal" Version="7.3.1" />
   </ItemGroup>
 </Project>
