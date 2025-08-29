@@ -11,7 +11,7 @@ namespace CastAmNow.Web.Client.Services
 
         public string GetPlatform()
         {
-            return "Web - " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
+            return "User device Web - " + System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription;
         }
     }
 }

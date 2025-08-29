@@ -1,0 +1,6 @@
+@CastAmNow.Defects_HostAddress = http://localhost:5111
+
+GET {{CastAmNow.Defects_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

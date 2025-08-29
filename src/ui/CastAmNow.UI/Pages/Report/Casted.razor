@@ -1,0 +1,446 @@
+@page "/"
+@using CastAmNow.Core.Dtos.Defect
+@using CastAmNow.UI.Components
+@using Microsoft.Extensions.Logging
+@inject IDefectApi DefectApi
+@inject ILogger<Casted> Logger
+
+<style>
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .cast-attachments {
+        margin-top: 10px;
+        display: grid;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .cast-attachments.single {
+        grid-template-columns: 1fr;
+    }
+
+    .cast-attachments.multiple {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .attachment-preview {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .more-attachments {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        padding: 5px 10px;
+        border-radius: 15px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    .modal-title {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .modal-description {
+        margin: 15px 0;
+        white-space: pre-wrap;
+    }
+
+    .modal-attachments {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .modal-attachment {
+        width: 100%;
+        max-height: 400px;
+        object-fit: contain;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .spinner-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .spinner-text {
+        margin-top: 10px;
+        color: #333;
+        font-size: 14px;
+    }
+</style>
+
+@if (_isLoading)
+{
+    <div class="loading-overlay">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <div class="spinner-text">Processing your submission...</div>
+        </div>
+    </div>
+}
+
+<div class="cast-container">
+    <div class="cast-card">
+        <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
+
+        <div class="form-group">
+            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_createDefectDto.Title"
+                @onfocus="() => _isExpanded = true" />
+        </div>
+
+        @if (_isExpanded)
+        {
+            <div class="form-group">
+                <textarea class="cast-input-2" placeholder="Describe the defect and add media..."
+                    @bind="_createDefectDto.Description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" />
+            </div>
+            @foreach (var category in Enum.GetValues<CategoryDto>().Where(c => c != CategoryDto.None))
+            {
+                <label>
+                    <input type="radio" name="category" value="@category" @onchange="() => _createDefectDto.Category = category"
+                        checked="@(_createDefectDto.Category == category)" />
+                    @category.ToString()
+                </label>
+            }
+
+
+            @if (_itemsToPreview.Previews.Count > 0)
+            {
+                <div class="preview-area">
+                    @foreach (var preview in _itemsToPreview.Previews)
+                    {
+                        if (preview.IsVideo)
+                        {
+                            <video src="@preview.Url" controls width="150" style="margin-right:10px;"></video>
+                        }
+                        else
+                        {
+                            <img src="@preview.Url" alt="preview" style="width:150px; height:auto; margin-right:10px;" />
+                        }
+                    }
+                </div>
+            }
+
+            <div class="cast-actions">
+                <button class="cast-btn" @onclick="SubmitCastedDefects" disabled="@IfAllIsEmpty()">
+                    Cast Am Now 🚨
+                </button>
+            </div>
+        }
+    </div>
+
+    <div class="cast-feed">
+        @foreach (var cast in _defectDtos)
+        {
+            <div class="cast-item">
+                <div class="cast-user">@cast.Title</div>
+                <div class="cast-text">@cast.Description</div>
+                
+                @if (cast.Attachments?.Any() == true)
+                {
+                    <div class="cast-attachments @(cast.Attachments.Count == 1 ? "single" : "multiple")">
+                        @{
+                            var displayedAttachments = cast.Attachments.Take(2).ToList();
+                            var remainingCount = cast.Attachments.Count - 2;
+                        }
+                        
+                        @foreach (var attachment in displayedAttachments)
+                        {
+                            @if (attachment.FileType == FileTypeDto.Image)
+                            {
+                                <img src="@attachment.FileUrl" alt="Attachment" class="attachment-preview" />
+                            }
+                            else if (attachment.FileType == FileTypeDto.Video)
+                            {
+                                <video src="@attachment.FileUrl" controls class="attachment-preview">
+                                    Your browser does not support the video tag.
+                                </video>
+                            }
+                        }
+                        
+                        @if (remainingCount > 0)
+                        {
+                            <div class="more-attachments" @onclick="() => ShowDetailModal(cast)">
+                                +@remainingCount more
+                            </div>
+                        }
+                    </div>
+                }
+                <div class="cast-time">@cast.CreatedAt.ToString("MMM d, h:mm tt")</div>
+            </div>
+        }
+    </div>
+</div>
+
+@code
+{
+    private bool _isExpanded;
+    private bool _isLoading;
+    private IEnumerable<DefectDto> _defectDtos = [];
+    [CascadingParameter] public IModalService? Modal { get; set; }
+
+    private PreviewingModel _itemsToPreview = new();
+    CreateDefectDto _createDefectDto = new();
+    private List<IBrowserFile> _selectedFiles = [];
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        _selectedFiles = e.GetMultipleFiles().ToList();
+
+        foreach (var file in _selectedFiles)
+        {
+            _itemsToPreview.Attachments.Add(file.Name);
+
+            var mimeType = file.ContentType;
+            if (mimeType.StartsWith("image/"))
+            {
+                // Use a resized image for preview
+                var resizedFile = await file.RequestImageFileAsync(mimeType, 300, 300);
+                await using var stream = resizedFile.OpenReadStream(maxAllowedSize: 5_000_000);
+                var buffer = new byte[resizedFile.Size];
+                await stream.ReadAsync(buffer);
+                var base64 = Convert.ToBase64String(buffer);
+                var url = $"data:{mimeType};base64,{base64}";
+                _itemsToPreview.Previews.Add(new PreviewItem { Url = url, IsVideo = false });
+
+                _createDefectDto.Attachments.Add(new AttachmentDto
+                {
+                    FileUrl = file.Name,
+                    FileType = FileTypeDto.Image
+                });
+            }
+            else if (mimeType.StartsWith("video/"))
+            {
+                await using var stream = file.OpenReadStream(maxAllowedSize: 20_000_000);
+                var buffer = new byte[file.Size];
+                await stream.ReadAsync(buffer);
+                var base64 = Convert.ToBase64String(buffer);
+                var url = $"data:{mimeType};base64,{base64}";
+                _itemsToPreview.Previews.Add(new PreviewItem { Url = url, IsVideo = true });
+
+                _createDefectDto.Attachments.Add(new AttachmentDto
+                {
+                    FileUrl = file.Name,
+                    FileType = FileTypeDto.Video
+                });
+            }
+        }
+    }
+
+    private async Task LoadDefectsAsync()
+    {
+        Logger.LogInformation("Loading casted defects");
+        try
+        {
+            _defectDtos = await CastedService.GetCastedDefectsAsync();
+            Logger.LogInformation("Successfully loaded {Count} defects", _defectDtos?.Count() ?? 0);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading casted defects");
+            throw;
+        }
+    }
+
+    private async Task SubmitCastedDefects()
+    {
+        if (_isLoading) return;
+
+        try 
+        {
+            _isLoading = true;
+            StateHasChanged(); // Ensure the loading spinner shows immediately
+
+            Logger.LogInformation("Starting defect submission process");
+            Logger.LogInformation("Converting attachments to URLs...");
+            await ConvertEachAttachmentToUrls();
+            
+            Logger.LogInformation("Submitting defect with details: Title={Title}, Category={Category}, AttachmentCount={AttachmentCount}", 
+                _createDefectDto.Title,
+                _createDefectDto.Category,
+                _createDefectDto.Attachments.Count);
+            
+            Logger.LogDebug("Full defect details:\nTitle: {Title}\nDescription: {Description}\nCategory: {Category}\nAttachments: {Attachments}", 
+                _createDefectDto.Title,
+                _createDefectDto.Description,
+                _createDefectDto.Category,
+                string.Join(", ", _createDefectDto.Attachments.Select(a => a.FileUrl)));
+
+            SetLocationToCreatedDefectDto();
+            await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
+            Logger.LogInformation("Successfully submitted defect");
+            
+            _isExpanded = false;
+            _createDefectDto = new CreateDefectDto();
+            _itemsToPreview = new PreviewingModel();
+            _selectedFiles.Clear();
+
+            await LoadDefectsAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to submit defect");
+            throw;
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void SetLocationToCreatedDefectDto()
+    {
+        _createDefectDto.Latitude = "11.111";
+        _createDefectDto.Longitude = "22.222";
+        _createDefectDto.Location = "coming soon";
+    }
+
+    private async Task ConvertEachAttachmentToUrls()
+    {
+        Logger.LogInformation("Starting attachment URL conversion for {Count} attachments", _createDefectDto.Attachments.Count);
+        
+        foreach (var attachment in _createDefectDto.Attachments)
+        {
+            Logger.LogInformation("Processing attachment with name: {FileName}", attachment.FileUrl);
+            
+            var file = _selectedFiles.FirstOrDefault(f => f.Name == attachment.FileUrl);
+            if (file == null)
+            {
+                Logger.LogWarning("File not found in selected files: {FileName}", attachment.FileUrl);
+                continue;
+            }
+            
+            Logger.LogInformation("Converting file {FileName} to URL", file.Name);
+            var url = await UploadFileAsync(file);
+            attachment.FileUrl = url;
+            Logger.LogInformation("Successfully converted {FileName} to URL: {Url}", file.Name, url);
+        }
+        
+        Logger.LogInformation("Completed attachment URL conversion");
+    }
+
+    private async Task<string> UploadFileAsync(IBrowserFile file)
+    {
+        Logger.LogInformation("Starting file upload for {FileName}, size: {FileSize} bytes", file.Name, file.Size);
+        try
+        {
+            // Create a unique file name with timestamp and GUID
+            var fileExtension = Path.GetExtension(file.Name);
+            var uniqueFileName = $"{Path.GetFileNameWithoutExtension(file.Name)}_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+            
+            Logger.LogInformation("Generated unique file name: {UniqueFileName}", uniqueFileName);
+            
+            await using var stream = file.OpenReadStream(maxAllowedSize: 20_000_000);
+            var url = await DefectApi.StorageUploadService.UploadImage(
+                stream,
+                "user-folder",
+                uniqueFileName,
+                (s, progress) => Logger.LogInformation("Upload progress for {FileName}: {Progress}%", uniqueFileName, progress),
+                CancellationToken.None
+            );
+            Logger.LogInformation("Successfully uploaded file {FileName} to {Url}", uniqueFileName, url);
+            return url;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error uploading file {FileName}", file.Name);
+            throw;
+        }
+    }
+
+    bool IfAllIsEmpty()
+    {
+        var isTitleMissing = string.IsNullOrWhiteSpace(_createDefectDto.Title);
+        var isDescriptionMissing = string.IsNullOrWhiteSpace(_createDefectDto.Description);
+        var isAttachmentMissing = _createDefectDto.Attachments.Count == 0;
+        var isCategoryMissing = _createDefectDto.Category == CategoryDto.None;
+
+        // Log the validation state
+        Logger.LogDebug("Form validation state: Title={HasTitle}, Description={HasDescription}, Attachments={AttachmentCount}, Category={Category}",
+            !isTitleMissing,
+            !isDescriptionMissing,
+            _createDefectDto.Attachments.Count,
+            _createDefectDto.Category);
+
+        // Return true if ANY required field is missing (which will disable the button)
+        return isTitleMissing || isDescriptionMissing || isAttachmentMissing || isCategoryMissing;
+    }
+
+    private async Task ShowDetailModal(DefectDto defect)
+    {
+        if (Modal is null) return;
+
+        var parameters = new ModalParameters()
+            .Add(nameof(DefectDetailModal.Defect), defect);
+
+        var options = new ModalOptions()
+        {
+            Class = "blazored-modal",
+            Position = ModalPosition.Middle
+        };
+
+        await Modal.Show<DefectDetailModal>("Defect Details", parameters, options).Result;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Logger.LogInformation("Initializing Casted component");
+        await LoadDefectsAsync();
+    }
+
+    public class PreviewingModel
+    {
+        public List<string> Attachments { get; set; } = new();
+        public List<PreviewItem> Previews { get; set; } = new();
+    }
+
+    public class PreviewItem
+    {
+        public string Url { get; set; } = "";
+        public bool IsVideo { get; set; }
+    }
+}
