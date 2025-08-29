@@ -63,6 +63,8 @@ namespace CastAmNow.Defect.API.Repositories
             {
                 query = query.Where(d => d.Status == (Domain.Defect.Status)defectQuery!.Status);
             }
+            // Order by latest CreatedAt before pagination
+            query = query.OrderByDescending(d => d.CreatedAt);
 
             if (paginationFilter != null)
             {

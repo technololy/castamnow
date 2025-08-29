@@ -1,4 +1,4 @@
-﻿namespace CastAmNow.Defect.IntegrationTests
+﻿namespace CastAmNow.Defect.API.IntegrationTests
 {
     public class UnitTest1
     {
