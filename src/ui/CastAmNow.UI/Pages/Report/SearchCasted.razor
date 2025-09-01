@@ -1,6 +1,91 @@
-@page "/SearchCasted"
-<h3>SearchCasted</h3>
+@page "/search"
+@using CastAmNow.Core.Dtos.Defect
+@using Microsoft.Extensions.Logging
+@using CastAmNow.UI.Pages.Report
+@using Microsoft.AspNetCore.Components.Web
+@inject ICastedService CastedService
+@inject ILogger<SearchCasted> Logger
 
-@code {
-    
+<div class="search-container">
+    <div class="search-box mb-4">
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" @bind="@_searchTerm" @onkeyup="HandleKeyUp"
+                placeholder="Search casted defects..." />
+        </div>
+    </div>
+
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-content-center mt-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(_searchMessage))
+    {
+        <div class="alert @_searchMessageClass alert-dismissible fade show" role="alert">
+            @_searchMessage
+            <button type="button" class="btn-close" @onclick="@(() => _searchMessage = null)" aria-label="Close"></button>
+        </div>
+    }
+
+    <CastedFeed Defects="_searchResults" />
+</div>
+
+@code
+{
+    private string _searchTerm = "";
+    private bool _isLoading;
+    private IEnumerable<DefectDto> _searchResults = [];
+    private string? _searchMessage;
+    private string _searchMessageClass = "";
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await SearchDefects();
+        }
+    }
+
+    private async Task SearchDefects()
+    {
+        if (string.IsNullOrWhiteSpace(_searchTerm))
+        {
+            ShowMessage("Please enter a search term", "alert-warning");
+            return;
+        }
+
+        try
+        {
+            _isLoading = true;
+            StateHasChanged();
+
+            Logger.LogInformation("Searching for defects with term: {SearchTerm}", _searchTerm);
+            _searchResults = await CastedService.SearchCastedDefectsAsync(_searchTerm);
+
+            ShowMessage($"Found {_searchResults.Count()} results", "alert-success");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error searching for defects");
+            ShowMessage("Failed to search for defects. Please try again.", "alert-danger");
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void ShowMessage(string message, string cssClass)
+    {
+        _searchMessage = message;
+        _searchMessageClass = cssClass;
+        StateHasChanged();
+    }
+}
 }

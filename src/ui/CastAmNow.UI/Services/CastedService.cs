@@ -7,7 +7,6 @@ namespace CastAmNow.UI.Services;
 
 public class CastedService(
     IDefectApi api,
-    IDefectService defectService,
     ILogger<CastedService> logger) : ICastedService
 {
     public async Task<DefectDto?> SubmitCastedDefectsAsync(CreateDefectDto createDefectDto)
@@ -31,7 +30,7 @@ public class CastedService(
     }
     public async Task<IEnumerable<DefectDto>> SearchCastedDefectsAsync(string searchTerm)
     {
-        var response = await defectService.GetDefectAsync();
+        var response = await api.DefectService.GetDefectAsync();
         logger.LogInformation("response from api:{statusCode} is {message}. the route is {route}",
             response.StatusCode,
             response.Content?.Message,
