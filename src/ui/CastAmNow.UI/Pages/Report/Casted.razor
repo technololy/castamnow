@@ -278,6 +278,7 @@
         {
             _defectDtos = await CastedService.GetCastedDefectsAsync();
             Logger.LogInformation("Successfully loaded {Count} defects", _defectDtos?.Count() ?? 0);
+            Logger.LogInformation("====raw dfects top 5 are loaded {here}", System.Text.Json.JsonSerializer.Serialize(_defectDtos?.Take(5).OrderByDescending(d => d.CreatedAt)));
         }
         catch (Exception ex)
         {
@@ -312,13 +313,14 @@
 
             SetLocationToCreatedDefectDto();
             var response = await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
-            if (response is not null)
+            if (response)
             {
                 Logger.LogInformation("Successfully submitted defect");
                 _isExpanded = false;
                 _createDefectDto = new CreateDefectDto();
                 _itemsToPreview = new PreviewingModel();
                 _selectedFiles.Clear();
+                ToastService.Notify(new(ToastType.Success, $"You have casted something..."));
 
                 await LoadDefectsAsync();
             }
@@ -379,7 +381,8 @@
         {
             // Create a unique file name with timestamp and GUID
             var fileExtension = Path.GetExtension(file.Name);
-            var uniqueFileName = $"{Path.GetFileNameWithoutExtension(file.Name)}_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+            //var uniqueFileName = $"{Path.GetFileNameWithoutExtension(file.Name)}_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+            var uniqueFileName = $"{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
             
             Logger.LogInformation("Generated unique file name: {UniqueFileName}", uniqueFileName);
             

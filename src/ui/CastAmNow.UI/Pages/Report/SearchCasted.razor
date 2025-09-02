@@ -1,5 +1,6 @@
 @page "/search"
 @using CastAmNow.Core.Dtos.Defect
+@using CastAmNow.Core.Models
 @using Microsoft.Extensions.Logging
 @using CastAmNow.UI.Pages.Report
 @using Microsoft.AspNetCore.Components.Web
@@ -39,6 +40,7 @@
 {
     private string _searchTerm = "";
     private bool _isLoading;
+    DefectQuery defectQuery = new();
     private IEnumerable<DefectDto> _searchResults = [];
     private string? _searchMessage;
     private string _searchMessageClass = "";
@@ -87,5 +89,4 @@
         _searchMessageClass = cssClass;
         StateHasChanged();
     }
-}
 }
