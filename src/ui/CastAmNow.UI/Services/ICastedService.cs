@@ -1,4 +1,5 @@
 using CastAmNow.Core.Dtos.Defect;
+using CastAmNow.Core.Models;
 
 namespace CastAmNow.UI.Services;
 
@@ -8,5 +9,5 @@ public interface ICastedService
 
     public Task<bool> SubmitCastedDefectsAsync(CreateDefectDto createDefectDto);
 
-    public Task<IEnumerable<DefectDto>> GetCastedDefectsAsync();
+    public Task<IEnumerable<DefectDto>> GetCastedDefectsAsync(PaginationQuery? paginationQuery = null);
 }

@@ -20,22 +20,32 @@ public class CastedService(
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<IEnumerable<DefectDto>> GetCastedDefectsAsync()
+    public async Task<IEnumerable<DefectDto>> GetCastedDefectsAsync(PaginationQuery? paginationQuery = null)
     {
-        var response = await api.DefectService.GetDefectAsync();
-        logger.LogInformation("response from api:{statusCode} is {message}. the route is {route}",
+        var response = await api.DefectService.GetDefectAsync(
+            searchQuery: new DefectQuery(), // Empty search query since we want all defects
+            paginationQuery: paginationQuery ?? new PaginationQuery(1, 20)
+        );
+
+        logger.LogInformation("response from api:{statusCode} is {message}. the route is {route}. Page {page} of size {size}",
             response.StatusCode,
             response.Content?.Message,
-            response.RequestMessage?.RequestUri?.ToString());
+            response.RequestMessage?.RequestUri?.ToString(),
+            paginationQuery?.PageNumber ?? 1,
+            paginationQuery?.PageSize ?? 20);
+
         return response.Content?.Data ?? [];
     }
     public async Task<IEnumerable<DefectDto>> SearchCastedDefectsAsync(string searchTerm)
     {
-        var response = await api.DefectService.GetDefectAsync(new DefectQuery()
-        {
-            Title = searchTerm,
-            Description = searchTerm,
-        });
+        var response = await api.DefectService.GetDefectAsync(
+            searchQuery: new DefectQuery()
+            {
+                Title = searchTerm,
+                Description = searchTerm,
+            },
+            paginationQuery: new PaginationQuery(1, 20)
+        );
         logger.LogInformation("response from api:{statusCode} is {message}. the route is {route}",
             response.StatusCode,
             response.Content?.Message,

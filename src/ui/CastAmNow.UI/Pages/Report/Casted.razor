@@ -1,8 +1,17 @@
 @page "/"
 @using CastAmNow.Core.Dtos.Defect
+@using CastAmNow.Core.Models
 @using Microsoft.Extensions.Logging
 @inject IDefectApi DefectApi
 @inject ILogger<Casted> Logger
+@inject ICastedService CastedService
+
+<PageTitle>Cast Am Now</PageTitle>
+
+@{
+    var jsPath = "_content/CastAmNow.UI/js/infiniteScroll.js";
+}
+<script src="@jsPath"></script>
 
 <style>
     .loading-overlay {
@@ -133,9 +142,6 @@
                     @bind="_createDefectDto.Description"></textarea>
             </div>
 
-            <div class="form-group">
-                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" />
-            </div>
             @foreach (var category in Enum.GetValues<CategoryDto>().Where(c => c != CategoryDto.None))
             {
                 <label>
@@ -144,6 +150,10 @@
                     @category.ToString()
                 </label>
             }
+
+            <div class="form-group">
+                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" />
+            </div>
 
 
             @if (_itemsToPreview.Previews.Count > 0)
@@ -174,7 +184,7 @@
     <div class="cast-feed">
         @foreach (var cast in _defectDtos)
         {
-            <div class="cast-item">
+            <div class="cast-item" @key="cast.Id">
                 <div class="cast-user">@cast.Title</div>
                 <div class="cast-text">@cast.Description</div>
                 
@@ -211,16 +221,34 @@
                 <div class="cast-time">@cast.CreatedAt.ToString("MMM d, h:mm tt")</div>
             </div>
         }
+        @if (_loadingMore)
+        {
+            <div class="text-center p-3">
+                <div class="spinner"></div>
+                <div class="spinner-text">Loading more...</div>
+            </div>
+        }
     </div>
 </div>
+
+@code {
+
+}
+
+@inject IJSRuntime JSRuntime
 
 @code
 {
     private bool _isExpanded;
     private bool _isLoading;
-    private IEnumerable<DefectDto> _defectDtos = [];
+    private bool _loadingMore;
+    private List<DefectDto> _defectDtos = [];
     private PreviewingModel _itemsToPreview = new();
     CreateDefectDto _createDefectDto = new();
+    private PaginationQuery _paginationQuery = new()
+    {
+        PageSize = 100
+    };
     private List<IBrowserFile> _selectedFiles = [];
 
     [CascadingParameter] public IModalService? Modal { get; set; }
@@ -271,19 +299,51 @@
         }
     }
 
-    private async Task LoadDefectsAsync()
+    private async Task LoadDefectsAsync(bool loadMore = false)
     {
-        Logger.LogInformation("Loading casted defects");
+        if (!loadMore)
+        {
+            _paginationQuery.PageNumber = 1;
+            _defectDtos.Clear();
+        }
+
+        Logger.LogInformation("Loading casted defects - Page {PageNumber}", _paginationQuery.PageNumber);
         try
         {
-            _defectDtos = await CastedService.GetCastedDefectsAsync();
-            Logger.LogInformation("Successfully loaded {Count} defects", _defectDtos?.Count() ?? 0);
-            Logger.LogInformation("====raw dfects top 5 are loaded {here}", System.Text.Json.JsonSerializer.Serialize(_defectDtos?.Take(5).OrderByDescending(d => d.CreatedAt)));
+            _loadingMore = loadMore;
+            StateHasChanged();
+
+            var newDefects = (await CastedService.GetCastedDefectsAsync(new PaginationQuery 
+            { 
+                PageNumber = _paginationQuery.PageNumber,
+                PageSize = _paginationQuery.PageSize 
+            })).ToList();
+            if (loadMore)
+            {
+                _defectDtos.AddRange(newDefects);
+            }
+            else
+            {
+                _defectDtos = newDefects;
+            }
+
+            Logger.LogInformation("Successfully loaded {Count} defects for page {PageNumber}", 
+                newDefects.Count, _paginationQuery.PageNumber);
+            
+            if (newDefects.Any())
+            {
+                _paginationQuery.PageNumber++;
+            }
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Error loading casted defects");
             throw;
+        }
+        finally
+        {
+            _loadingMore = false;
+            StateHasChanged();
         }
     }
 
@@ -442,6 +502,32 @@
     {
         Logger.LogInformation("Initializing Casted component");
         await LoadDefectsAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initializeInfiniteScroll", DotNetObjectReference.Create(this));
+        }
+        else if (!_loadingMore)
+        {
+            await JSRuntime.InvokeVoidAsync("updateObserver");
+        }
+    }
+
+    [JSInvokable]
+    public async Task LoadMoreData()
+    {
+        if (!_loadingMore)
+        {
+            await LoadDefectsAsync(true);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("removeInfiniteScroll");
     }
 
     public class PreviewingModel

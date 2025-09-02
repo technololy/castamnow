@@ -14,16 +14,13 @@ namespace CastAmNow.Defect.API.Repositories
 
             query = query.Where(d => !d.IsDeleted);
 
-            if (!string.IsNullOrEmpty(defectQuery?.Title))
+            // Handle title and description search together to create OR condition
+            if (!string.IsNullOrEmpty(defectQuery?.Title) || !string.IsNullOrEmpty(defectQuery?.Description))
             {
                 query = query.Where(d =>
-                    d.Title!.Contains(defectQuery.Title));
-            }
-
-            if (!string.IsNullOrEmpty(defectQuery?.Description))
-            {
-                query = query.Where(d =>
-                   d.Description!.Contains(defectQuery.Description));
+                    (!string.IsNullOrEmpty(defectQuery.Title) && d.Title!.Contains(defectQuery.Title)) ||
+                    (!string.IsNullOrEmpty(defectQuery.Description) && d.Description!.Contains(defectQuery.Description))
+                );
             }
 
             if (!string.IsNullOrEmpty(defectQuery?.Latitude))
