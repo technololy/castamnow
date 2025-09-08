@@ -15,7 +15,7 @@ main {
 .top-row {
   background-color: #f7f7f7;
   border-bottom: 1px solid #d6d5d5;
-  justify-content: flex-end;
+  justify-content: center;
   height: 3.5rem;
   display: flex;
   align-items: center;
@@ -77,6 +77,18 @@ main {
   article {
     padding-left: 2rem !important;
     padding-right: 1.5rem !important;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 12px;
+  }
+
+  .right-rail {
+    position: sticky;
+    top: 60px;
+    height: fit-content;
   }
 }
 

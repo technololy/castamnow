@@ -114,6 +114,11 @@
         color: #333;
         font-size: 14px;
     }
+
+    /* Layout for main column inside page content */
+    .cast-container {
+        display: block;
+    }
 </style>
 
 @if (_isLoading)
@@ -127,108 +132,109 @@
 }
 
 <div class="cast-container">
-    <div class="cast-card">
-        <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
-
-        <div class="form-group">
-            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_createDefectDto.Title"
-                @onfocus="() => _isExpanded = true" />
-        </div>
-
-        @if (_isExpanded)
-        {
-            <div class="form-group">
-                <textarea class="cast-input-2" placeholder="Describe the defect and add media..."
-                    @bind="_createDefectDto.Description"></textarea>
-            </div>
-
-            @foreach (var category in Enum.GetValues<CategoryDto>().Where(c => c != CategoryDto.None))
-            {
-                <label>
-                    <input type="radio" name="category" value="@category" @onchange="() => _createDefectDto.Category = category"
-                        checked="@(_createDefectDto.Category == category)" />
-                    @category.ToString()
-                </label>
-            }
+        <div class="cast-card">
+            <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
 
             <div class="form-group">
-                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" />
+                <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_createDefectDto.Title"
+                    @onfocus="() => _isExpanded = true" />
             </div>
 
-
-            @if (_itemsToPreview.Previews.Count > 0)
+            @if (_isExpanded)
             {
-                <div class="preview-area">
-                    @foreach (var preview in _itemsToPreview.Previews)
-                    {
-                        if (preview.IsVideo)
-                        {
-                            <video src="@preview.Url" controls width="150" style="margin-right:10px;"></video>
-                        }
-                        else
-                        {
-                            <img src="@preview.Url" alt="preview" style="width:150px; height:auto; margin-right:10px;" />
-                        }
-                    }
+                <div class="form-group">
+                    <textarea class="cast-input-2" placeholder="Describe the defect and add media..."
+                        @bind="_createDefectDto.Description"></textarea>
                 </div>
-            }
 
-            <div class="cast-actions">
-                <button class="cast-btn" @onclick="SubmitCastedDefects" disabled="@IfAllIsEmpty()">
-                    Cast Am Now 🚨
-                </button>
-            </div>
-        }
-    </div>
-
-    <div class="cast-feed">
-        @foreach (var cast in _defectDtos)
-        {
-            <div class="cast-item" @key="cast.Id">
-                <div class="cast-user">@cast.Title</div>
-                <div class="cast-text">@cast.Description</div>
-                
-                @if (cast.Attachments?.Any() == true)
+                @foreach (var category in Enum.GetValues<CategoryDto>().Where(c => c != CategoryDto.None))
                 {
-                    <div class="cast-attachments @(cast.Attachments.Count == 1 ? "single" : "multiple")">
-                        @{
-                            var displayedAttachments = cast.Attachments.Take(2).ToList();
-                            var remainingCount = cast.Attachments.Count - 2;
-                        }
-                        
-                        @foreach (var attachment in displayedAttachments)
+                    <label>
+                        <input type="radio" name="category" value="@category" @onchange="() => _createDefectDto.Category = category"
+                            checked="@(_createDefectDto.Category == category)" />
+                        @category.ToString()
+                    </label>
+                }
+                <br />
+
+                <div class="form-group">
+                    <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" />
+                </div>
+
+
+                @if (_itemsToPreview.Previews.Count > 0)
+                {
+                    <div class="preview-area">
+                        @foreach (var preview in _itemsToPreview.Previews)
                         {
-                            @if (attachment.FileType == FileTypeDto.Image)
+                            if (preview.IsVideo)
                             {
-                                <img src="@attachment.FileUrl" alt="Attachment" class="attachment-preview" />
+                                <video src="@preview.Url" controls width="150" style="margin-right:10px;"></video>
                             }
-                            else if (attachment.FileType == FileTypeDto.Video)
+                            else
                             {
-                                <video src="@attachment.FileUrl" controls class="attachment-preview">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <img src="@preview.Url" alt="preview" style="width:150px; height:auto; margin-right:10px;" />
                             }
-                        }
-                        
-                        @if (remainingCount > 0)
-                        {
-                            <div class="more-attachments" @onclick="() => ShowDetailModal(cast)">
-                                +@remainingCount more
-                            </div>
                         }
                     </div>
                 }
-                <div class="cast-time">@cast.CreatedAt.ToString("MMM d, h:mm tt")</div>
-            </div>
-        }
-        @if (_loadingMore)
-        {
-            <div class="text-center p-3">
-                <div class="spinner"></div>
-                <div class="spinner-text">Loading more...</div>
-            </div>
-        }
-    </div>
+
+                <div class="cast-actions">
+                    <button class="cast-btn" @onclick="SubmitCastedDefects" disabled="@IfAllIsEmpty()">
+                        Cast Am Now 🚨
+                    </button>
+                </div>
+            }
+        </div>
+
+        <div class="cast-feed">
+            @foreach (var cast in _defectDtos)
+            {
+                <div class="cast-item" @key="cast.Id">
+                    <div class="cast-user">@cast.Title</div>
+                    <div class="cast-text">@cast.Description</div>
+                    
+                    @if (cast.Attachments?.Any() == true)
+                    {
+                        <div class="cast-attachments @(cast.Attachments.Count == 1 ? "single" : "multiple")">
+                            @{
+                                var displayedAttachments = cast.Attachments.Take(2).ToList();
+                                var remainingCount = cast.Attachments.Count - 2;
+                            }
+                            
+                            @foreach (var attachment in displayedAttachments)
+                            {
+                                @if (attachment.FileType == FileTypeDto.Image)
+                                {
+                                    <img src="@attachment.FileUrl" alt="Attachment" class="attachment-preview" />
+                                }
+                                else if (attachment.FileType == FileTypeDto.Video)
+                                {
+                                    <video src="@attachment.FileUrl" controls class="attachment-preview">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                }
+                            }
+                            
+                            @if (remainingCount > 0)
+                            {
+                                <div class="more-attachments" @onclick="() => ShowDetailModal(cast)">
+                                    +@remainingCount more
+                                </div>
+                            }
+                        </div>
+                    }
+                    <div class="cast-time">@cast.CreatedAt.ToString("MMM d, h:mm tt")</div>
+                </div>
+            }
+            @if (_loadingMore)
+            {
+                <div class="text-center p-3">
+                    <div class="spinner"></div>
+                    <div class="spinner-text">Loading more...</div>
+                </div>
+            }
+        </div>
 </div>
 
 @code {
@@ -250,6 +256,7 @@
         PageSize = 100
     };
     private List<IBrowserFile> _selectedFiles = [];
+
 
     [CascadingParameter] public IModalService? Modal { get; set; }
     [Inject] protected ToastService ToastService { get; set; } = default!;
@@ -498,6 +505,7 @@
         await Modal.Show<DefectDetailModal>("Defect Details", parameters, options).Result;
     }
 
+
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Initializing Casted component");
@@ -541,4 +549,5 @@
         public string Url { get; set; } = "";
         public bool IsVideo { get; set; }
     }
+
 }

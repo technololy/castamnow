@@ -43,6 +43,7 @@ new NavItem { Id = "2", Href = "/search", IconName = IconName.Search, Text = "Se
     }
 } *@
 
+@using CastAmNow.UI.Components
 @inherits LayoutComponentBase
 
 <div class="page">
@@ -52,12 +53,17 @@ new NavItem { Id = "2", Href = "/search", IconName = IconName.Search, Text = "Se
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <span>Cast (report/gossip, blast) defects about your society or any civic thing.</span>
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
+        <div class="content-grid">
+            <article class="content px-4">
+                @Body
+            </article>
+            <aside class="right-rail px-4">
+                <DynamicComponent Type="typeof(PinnedAnnouncementSidebar)" />
+            </aside>
+        </div>
         <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
     </main>
 </div>
