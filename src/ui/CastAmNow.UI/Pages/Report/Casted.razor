@@ -1,8 +1,17 @@
 @page "/"
 @using CastAmNow.Core.Dtos.Defect
+@using CastAmNow.Core.Models
 @using Microsoft.Extensions.Logging
 @inject IDefectApi DefectApi
 @inject ILogger<Casted> Logger
+@inject ICastedService CastedService
+
+<PageTitle>Cast Am Now</PageTitle>
+
+@{
+    var jsPath = "_content/CastAmNow.UI/js/infiniteScroll.js";
+}
+<script src="@jsPath"></script>
 
 <style>
     .loading-overlay {
@@ -105,6 +114,11 @@
         color: #333;
         font-size: 14px;
     }
+
+    /* Layout for main column inside page content */
+    .cast-container {
+        display: block;
+    }
 </style>
 
 @if (_isLoading)
@@ -118,110 +132,131 @@
 }
 
 <div class="cast-container">
-    <div class="cast-card">
-        <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
-
-        <div class="form-group">
-            <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_createDefectDto.Title"
-                @onfocus="() => _isExpanded = true" />
-        </div>
-
-        @if (_isExpanded)
-        {
-            <div class="form-group">
-                <textarea class="cast-input-2" placeholder="Describe the defect and add media..."
-                    @bind="_createDefectDto.Description"></textarea>
-            </div>
+        <div class="cast-card">
+            <h3 class="cast-card-title">What civic defect would you like to cast..</h3>
 
             <div class="form-group">
-                <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" />
+                <input type="text" class="cast-input-2" placeholder="Enter a title..." @bind="_createDefectDto.Title"
+                    @onfocus="() => _isExpanded = true" />
             </div>
-            @foreach (var category in Enum.GetValues<CategoryDto>().Where(c => c != CategoryDto.None))
-            {
-                <label>
-                    <input type="radio" name="category" value="@category" @onchange="() => _createDefectDto.Category = category"
-                        checked="@(_createDefectDto.Category == category)" />
-                    @category.ToString()
-                </label>
-            }
 
-
-            @if (_itemsToPreview.Previews.Count > 0)
+            @if (_isExpanded)
             {
-                <div class="preview-area">
-                    @foreach (var preview in _itemsToPreview.Previews)
-                    {
-                        if (preview.IsVideo)
-                        {
-                            <video src="@preview.Url" controls width="150" style="margin-right:10px;"></video>
-                        }
-                        else
-                        {
-                            <img src="@preview.Url" alt="preview" style="width:150px; height:auto; margin-right:10px;" />
-                        }
-                    }
+                <div class="form-group">
+                    <textarea class="cast-input-2" placeholder="Describe the defect and add media..."
+                        @bind="_createDefectDto.Description"></textarea>
                 </div>
-            }
 
-            <div class="cast-actions">
-                <button class="cast-btn" @onclick="SubmitCastedDefects" disabled="@IfAllIsEmpty()">
-                    Cast Am Now 🚨
-                </button>
-            </div>
-        }
-    </div>
-
-    <div class="cast-feed">
-        @foreach (var cast in _defectDtos)
-        {
-            <div class="cast-item">
-                <div class="cast-user">@cast.Title</div>
-                <div class="cast-text">@cast.Description</div>
-                
-                @if (cast.Attachments?.Any() == true)
+                @foreach (var category in Enum.GetValues<CategoryDto>().Where(c => c != CategoryDto.None))
                 {
-                    <div class="cast-attachments @(cast.Attachments.Count == 1 ? "single" : "multiple")">
-                        @{
-                            var displayedAttachments = cast.Attachments.Take(2).ToList();
-                            var remainingCount = cast.Attachments.Count - 2;
-                        }
-                        
-                        @foreach (var attachment in displayedAttachments)
+                    <label>
+                        <input type="radio" name="category" value="@category" @onchange="() => _createDefectDto.Category = category"
+                            checked="@(_createDefectDto.Category == category)" />
+                        @category.ToString()
+                    </label>
+                }
+                <br />
+
+                <div class="form-group">
+                    <InputFile OnChange="HandleFileSelected" multiple accept="image/*,video/*" MaxFileSize="10485760" />
+                </div>
+
+
+                @if (_itemsToPreview.Previews.Count > 0)
+                {
+                    <div class="preview-area">
+                        @foreach (var preview in _itemsToPreview.Previews)
                         {
-                            @if (attachment.FileType == FileTypeDto.Image)
+                            if (preview.IsVideo)
                             {
-                                <img src="@attachment.FileUrl" alt="Attachment" class="attachment-preview" />
+                                <video src="@preview.Url" controls width="150" style="margin-right:10px;"></video>
                             }
-                            else if (attachment.FileType == FileTypeDto.Video)
+                            else
                             {
-                                <video src="@attachment.FileUrl" controls class="attachment-preview">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <img src="@preview.Url" alt="preview" style="width:150px; height:auto; margin-right:10px;" />
                             }
-                        }
-                        
-                        @if (remainingCount > 0)
-                        {
-                            <div class="more-attachments" @onclick="() => ShowDetailModal(cast)">
-                                +@remainingCount more
-                            </div>
                         }
                     </div>
                 }
-                <div class="cast-time">@cast.CreatedAt.ToString("MMM d, h:mm tt")</div>
-            </div>
-        }
-    </div>
+
+                <div class="cast-actions">
+                    <button class="cast-btn" @onclick="SubmitCastedDefects" disabled="@IfAllIsEmpty()">
+                        Cast Am Now 🚨
+                    </button>
+                </div>
+            }
+        </div>
+
+        <div class="cast-feed">
+            @foreach (var cast in _defectDtos)
+            {
+                <div class="cast-item" @key="cast.Id">
+                    <div class="cast-user">@cast.Title</div>
+                    <div class="cast-text">@cast.Description</div>
+                    
+                    @if (cast.Attachments?.Any() == true)
+                    {
+                        <div class="cast-attachments @(cast.Attachments.Count == 1 ? "single" : "multiple")">
+                            @{
+                                var displayedAttachments = cast.Attachments.Take(2).ToList();
+                                var remainingCount = cast.Attachments.Count - 2;
+                            }
+                            
+                            @foreach (var attachment in displayedAttachments)
+                            {
+                                @if (attachment.FileType == FileTypeDto.Image)
+                                {
+                                    <img src="@attachment.FileUrl" alt="Attachment" class="attachment-preview" />
+                                }
+                                else if (attachment.FileType == FileTypeDto.Video)
+                                {
+                                    <video src="@attachment.FileUrl" controls class="attachment-preview">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                }
+                            }
+                            
+                            @if (remainingCount > 0)
+                            {
+                                <div class="more-attachments" @onclick="() => ShowDetailModal(cast)">
+                                    +@remainingCount more
+                                </div>
+                            }
+                        </div>
+                    }
+                    <div class="cast-time">@cast.CreatedAt.ToString("MMM d, h:mm tt")</div>
+                </div>
+            }
+            @if (_loadingMore)
+            {
+                <div class="text-center p-3">
+                    <div class="spinner"></div>
+                    <div class="spinner-text">Loading more...</div>
+                </div>
+            }
+        </div>
 </div>
+
+@code {
+
+}
+
+@inject IJSRuntime JSRuntime
 
 @code
 {
     private bool _isExpanded;
     private bool _isLoading;
-    private IEnumerable<DefectDto> _defectDtos = [];
+    private bool _loadingMore;
+    private List<DefectDto> _defectDtos = [];
     private PreviewingModel _itemsToPreview = new();
     CreateDefectDto _createDefectDto = new();
+    private PaginationQuery _paginationQuery = new()
+    {
+        PageSize = 100
+    };
     private List<IBrowserFile> _selectedFiles = [];
+
 
     [CascadingParameter] public IModalService? Modal { get; set; }
     [Inject] protected ToastService ToastService { get; set; } = default!;
@@ -271,18 +306,51 @@
         }
     }
 
-    private async Task LoadDefectsAsync()
+    private async Task LoadDefectsAsync(bool loadMore = false)
     {
-        Logger.LogInformation("Loading casted defects");
+        if (!loadMore)
+        {
+            _paginationQuery.PageNumber = 1;
+            _defectDtos.Clear();
+        }
+
+        Logger.LogInformation("Loading casted defects - Page {PageNumber}", _paginationQuery.PageNumber);
         try
         {
-            _defectDtos = await CastedService.GetCastedDefectsAsync();
-            Logger.LogInformation("Successfully loaded {Count} defects", _defectDtos?.Count() ?? 0);
+            _loadingMore = loadMore;
+            StateHasChanged();
+
+            var newDefects = (await CastedService.GetCastedDefectsAsync(new PaginationQuery 
+            { 
+                PageNumber = _paginationQuery.PageNumber,
+                PageSize = _paginationQuery.PageSize 
+            })).ToList();
+            if (loadMore)
+            {
+                _defectDtos.AddRange(newDefects);
+            }
+            else
+            {
+                _defectDtos = newDefects;
+            }
+
+            Logger.LogInformation("Successfully loaded {Count} defects for page {PageNumber}", 
+                newDefects.Count, _paginationQuery.PageNumber);
+            
+            if (newDefects.Any())
+            {
+                _paginationQuery.PageNumber++;
+            }
         }
         catch (Exception ex)
         {
             Logger.LogError(ex, "Error loading casted defects");
             throw;
+        }
+        finally
+        {
+            _loadingMore = false;
+            StateHasChanged();
         }
     }
 
@@ -312,13 +380,14 @@
 
             SetLocationToCreatedDefectDto();
             var response = await CastedService.SubmitCastedDefectsAsync(_createDefectDto);
-            if (response is not null)
+            if (response)
             {
                 Logger.LogInformation("Successfully submitted defect");
                 _isExpanded = false;
                 _createDefectDto = new CreateDefectDto();
                 _itemsToPreview = new PreviewingModel();
                 _selectedFiles.Clear();
+                ToastService.Notify(new(ToastType.Success, $"You have casted something..."));
 
                 await LoadDefectsAsync();
             }
@@ -379,7 +448,8 @@
         {
             // Create a unique file name with timestamp and GUID
             var fileExtension = Path.GetExtension(file.Name);
-            var uniqueFileName = $"{Path.GetFileNameWithoutExtension(file.Name)}_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+            //var uniqueFileName = $"{Path.GetFileNameWithoutExtension(file.Name)}_{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
+            var uniqueFileName = $"{DateTime.UtcNow:yyyyMMddHHmmss}_{Guid.NewGuid():N}{fileExtension}";
             
             Logger.LogInformation("Generated unique file name: {UniqueFileName}", uniqueFileName);
             
@@ -435,10 +505,37 @@
         await Modal.Show<DefectDetailModal>("Defect Details", parameters, options).Result;
     }
 
+
     protected override async Task OnInitializedAsync()
     {
         Logger.LogInformation("Initializing Casted component");
         await LoadDefectsAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initializeInfiniteScroll", DotNetObjectReference.Create(this));
+        }
+        else if (!_loadingMore)
+        {
+            await JSRuntime.InvokeVoidAsync("updateObserver");
+        }
+    }
+
+    [JSInvokable]
+    public async Task LoadMoreData()
+    {
+        if (!_loadingMore)
+        {
+            await LoadDefectsAsync(true);
+        }
+    }
+
+    public void Dispose()
+    {
+        JSRuntime.InvokeVoidAsync("removeInfiniteScroll");
     }
 
     public class PreviewingModel
@@ -452,4 +549,5 @@
         public string Url { get; set; } = "";
         public bool IsVideo { get; set; }
     }
+
 }

@@ -1,0 +1,52 @@
+@using CastAmNow.Core.Dtos.Defect
+@using Microsoft.Extensions.Logging
+@using ModalSize = Blazored.Modal.ModalSize
+@inject IDefectApi DefectApi
+@inject ILogger<CastedFeed> Logger
+
+<div class="cast-feed">
+    @foreach (var cast in Defects)
+    {
+        <div class="cast-item">
+            <h4>@cast.Title</h4>
+            <p>@cast.Description</p>
+            @if (cast.Attachments?.Any() == true)
+            {
+                <div class="cast-attachments @(cast.Attachments.Count == 1 ? "single" : "multiple")">
+                    @foreach (var attachment in cast.Attachments.Take(2))
+                    {
+                        <img src="@attachment.FileUrl" alt="Attachment" class="attachment-preview" @onclick="() => ShowDetailModal(cast)" />
+                    }
+                    @if (cast.Attachments.Count > 2)
+                    {
+                        <span class="more-attachments" @onclick="() => ShowDetailModal(cast)">+@(cast.Attachments.Count - 2) more</span>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IEnumerable<DefectDto> Defects { get; set; } = [];
+
+    [CascadingParameter] 
+    public IModalService? Modal { get; set; }
+
+    private async Task ShowDetailModal(DefectDto defect)
+    {
+        if (Modal is null) return;
+
+        var parameters = new ModalParameters()
+            .Add(nameof(DefectDetailModal.Defect), defect);
+
+        var options = new ModalOptions()
+        {
+            Position = ModalPosition.Middle,
+            Size = ModalSize.Large
+        };
+
+        await Modal.Show<DefectDetailModal>("Defect Details", parameters, options).Result;
+    }
+}

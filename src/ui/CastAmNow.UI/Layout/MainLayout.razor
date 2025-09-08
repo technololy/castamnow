@@ -1,4 +1,50 @@
-﻿@inherits LayoutComponentBase
+﻿@* @inherits LayoutComponentBase
+
+<BlazorBootstrapLayout StickyHeader="true">
+    <HeaderSection>
+        <ThemeSwitcher Class="ps-3 ps-lg-2" />
+    </HeaderSection>
+
+    <SidebarSection>
+        <Sidebar2 Href="/" ImageSrc="https://demos.blazorbootstrap.com/images/logo/logo-white.svg" Title="Cast Am Now "
+            DataProvider="Sidebar2DataProvider" WidthUnit="Unit.Px" />
+    </SidebarSection>
+
+    <ContentSection>
+        @Body
+    </ContentSection>
+
+    <FooterSection>
+        Footer links...
+    </FooterSection>
+</BlazorBootstrapLayout>
+
+@code
+{
+    private IEnumerable<NavItem> navItems = default!;
+
+    private async Task<Sidebar2DataProviderResult> Sidebar2DataProvider(Sidebar2DataProviderRequest request)
+    {
+        if (navItems is null)
+            navItems = GetNavItems();
+
+        return await Task.FromResult(request.ApplyTo(navItems));
+    }
+
+    private IEnumerable<NavItem> GetNavItems()
+    {
+        navItems = new List<NavItem>
+{
+new NavItem { Id = "1", Href = "/", IconName = IconName.HouseDoorFill, Text = "Home", Match=NavLinkMatch.All},
+new NavItem { Id = "2", Href = "/search", IconName = IconName.Search, Text = "Search"},
+};
+
+        return navItems;
+    }
+} *@
+
+@using CastAmNow.UI.Components
+@inherits LayoutComponentBase
 
 <div class="page">
     <div class="sidebar">
@@ -7,12 +53,17 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <span>Cast (report/gossip, blast) defects about your society or any civic thing.</span>
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
+        <div class="content-grid">
+            <article class="content px-4">
+                @Body
+            </article>
+            <aside class="right-rail px-4">
+                <DynamicComponent Type="typeof(PinnedAnnouncementSidebar)" />
+            </aside>
+        </div>
         <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" />
     </main>
 </div>
