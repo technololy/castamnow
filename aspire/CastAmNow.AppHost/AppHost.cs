@@ -1,20 +1,20 @@
-using Microsoft.Extensions.Hosting;
-
 var builder = DistributedApplication.CreateBuilder(args);
 
-var sqlServer = builder
-    .AddSqlServer("dbserver", port: 12345)
-    .WithDataVolume("CastAmNow")
-    .WithLifetime(ContainerLifetime.Persistent);
+var sqlServer = builder.AddAzureSqlServer("dbserver");
 
 var storage = builder.AddAzureStorage("storage");
-var blobs = storage.AddBlobs("blobs");
-var filesContainer = blobs.AddBlobContainer("files", blobContainerName: "files");
-if (builder.Environment.IsDevelopment())
+var filesContainer = storage.AddBlobContainer("files", blobContainerName: "files");
+if (builder.ExecutionContext.IsRunMode)
 {
     storage.RunAsEmulator(s =>
     {
         s.WithDataVolume();
+        s.WithLifetime(ContainerLifetime.Persistent);
+    });
+    sqlServer.RunAsContainer(s =>
+    {
+        s.WithHostPort(12345);
+        s.WithDataVolume("CastAmNow");
         s.WithLifetime(ContainerLifetime.Persistent);
     });
 }
@@ -32,10 +32,13 @@ var migrationService = builder
     .WithReference(defectDb)
     .WaitFor(sqlServer);
 
-var seedData = builder.AddProject<Projects.CastAmNow_SeedData>("seeddata")
-    .WithReference(defectDb)
-    .SeedDatabaseCommand()
-    .ResetDatabaseCommand()
-    .WithExplicitStart();
+if (builder.ExecutionContext.IsRunMode)
+{
+    var seedData = builder.AddProject<Projects.CastAmNow_SeedData>("seeddata")
+        .WithReference(defectDb)
+        .SeedDatabaseCommand()
+        .ResetDatabaseCommand()
+        .WithExplicitStart();
+}
 
 builder.Build().Run();

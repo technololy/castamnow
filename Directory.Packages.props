@@ -6,10 +6,11 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net9.0' Or &#xA;                      '$(TargetFramework)'=='net9.0-android' Or &#xA;                      '$(TargetFramework)'=='net9.0-ios' Or &#xA;                      '$(TargetFramework)'=='net9.0-maccatalyst' Or&#xA;                      ('$(TargetFramework)'=='net9.0-windows10.0.19041.0' And $([MSBuild]::IsOSPlatform('windows')))">
     <!-- Aspire -->
     <PackageVersion Include="Aspire.Azure.Storage.Blobs" Version="9.3.1" />
-    <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="9.4.0" />
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.4.1" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.4.0" />
-    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.4.0" />
+    <PackageVersion Include="Aspire.Hosting.Azure.Sql" Version="9.4.2" />
+    <PackageVersion Include="Aspire.Hosting.Azure.Storage" Version="9.4.2" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.4.2" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.4.2" />
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.4.2" />
     <PackageVersion Include="AspNetCore.HealthChecks.SqlServer" Version="9.0.0" />
     <PackageVersion Include="Blazor.Bootstrap" Version="3.4.0" />
     <!-- Service defaults -->
