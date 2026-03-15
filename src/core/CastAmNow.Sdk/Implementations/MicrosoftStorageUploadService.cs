@@ -1,11 +1,11 @@
-﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using CastAmNow.Sdk.Abstractions;
 
 namespace CastAmNow.Sdk.Implementations
 {
 
-    internal class MicrosoftStorageUploadService : IStorageUploadService
+    public class MicrosoftStorageUploadService : IStorageUploadService
     {
         private readonly Progress<long> progress = new();
         private readonly string? connectionString;

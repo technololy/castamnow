@@ -433,7 +433,7 @@
             }
             
             Logger.LogInformation("Converting file {FileName} to URL", file.Name);
-            var url = await UploadFileAsync(file);
+            var url = await UploadFileAsync(file, _createDefectDto.Category);
             attachment.FileUrl = url;
             Logger.LogInformation("Successfully converted {FileName} to URL: {Url}", file.Name, url);
         }
@@ -441,7 +441,7 @@
         Logger.LogInformation("Completed attachment URL conversion");
     }
 
-    private async Task<string> UploadFileAsync(IBrowserFile file)
+    private async Task<string> UploadFileAsync(IBrowserFile file, CategoryDto categoryDto)
     {
         Logger.LogInformation("Starting file upload for {FileName}, size: {FileSize} bytes", file.Name, file.Size);
         try
@@ -456,7 +456,7 @@
             await using var stream = file.OpenReadStream(maxAllowedSize: 20_000_000);
             var url = await DefectApi.StorageUploadService.UploadImage(
                 stream,
-                "user-folder",
+                categoryDto.ToString(),
                 uniqueFileName,
                 (s, progress) => Logger.LogInformation("Upload progress for {FileName}: {Progress}%", uniqueFileName, progress),
                 CancellationToken.None
@@ -527,7 +527,7 @@
     [JSInvokable]
     public async Task LoadMoreData()
     {
-        if (!_loadingMore)
+        if (_loadingMore)
         {
             await LoadDefectsAsync(true);
         }

@@ -23,21 +23,49 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 var configArgs = builder.Configuration.AsEnumerable().Select(kvp => kvp.Key).ToArray();
-if (args.Any(x => x == UseLocalArgs) || configArgs.Any(x => x == UseLocalArgs))
+var dbProvider = builder.Configuration["DB_PROVIDER"]?.ToLower() ?? "sqlserver";
+
+if (dbProvider == "postgresql")
 {
-    builder.Services.AddDbContext<DefectDbContext>(options =>
+    if (args.Any(x => x == UseLocalArgs) || configArgs.Any(x => x == UseLocalArgs))
     {
-        options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-    });
+        builder.Services.AddDbContext<DefectDbContext>(options =>
+        {
+            options.UseNpgsql(builder.Configuration.GetConnectionString("Default"), 
+                x => x.MigrationsAssembly("CastAmNow.Defect.Migrations.Postgresql"));
+        });
+    }
+    else
+    {
+        builder.AddNpgsqlDbContext<DefectDbContext>("DefectDb", configureDbContextOptions:
+            opts =>
+            {
+                opts.UseNpgsql(x => x.MigrationsAssembly("CastAmNow.Defect.Migrations.Postgresql"));
+                opts.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+                opts.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+    }
 }
 else
 {
-    builder.AddSqlServerDbContext<DefectDbContext>("DefectDb", configureDbContextOptions:
-        opts =>
+    if (args.Any(x => x == UseLocalArgs) || configArgs.Any(x => x == UseLocalArgs))
+    {
+        builder.Services.AddDbContext<DefectDbContext>(options =>
         {
-            opts.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
-            opts.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Default"), 
+                x => x.MigrationsAssembly("CastAmNow.Defect.Migrations.SqlServer"));
         });
+    }
+    else
+    {
+        builder.AddSqlServerDbContext<DefectDbContext>("DefectDb", configureDbContextOptions:
+            opts =>
+            {
+                opts.UseSqlServer(x => x.MigrationsAssembly("CastAmNow.Defect.Migrations.SqlServer"));
+                opts.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+                opts.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+    }
 }
 var app = builder.Build();
 

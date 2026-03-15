@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -8,14 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting" />
-	  <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
+	    <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
 	  <PackageReference Include="Bogus" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\aspire\CastAmNow.ServiceDefaults\CastAmNow.ServiceDefaults.csproj" />
     <ProjectReference Include="..\CastAmNow.Defect.Data\CastAmNow.Defect.Data.csproj" />
+    <ProjectReference Include="..\CastAmNow.Defect.Migrations.SqlServer\CastAmNow.Defect.Migrations.SqlServer.csproj" />
+    <ProjectReference Include="..\CastAmNow.Defect.Migrations.Postgresql\CastAmNow.Defect.Migrations.Postgresql.csproj" />
   </ItemGroup>
 </Project>

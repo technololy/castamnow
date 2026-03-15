@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace CastAmNow.Defect.Data.Migrations
+namespace CastAmNow.Defect.Migrations.SqlServer
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration
