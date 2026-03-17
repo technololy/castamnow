@@ -3,6 +3,8 @@ using CastAmNow.Defect.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
+
 const string UseLocalArgs = "/local";
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +25,28 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 var configArgs = builder.Configuration.AsEnumerable().Select(kvp => kvp.Key).ToArray();
-var dbProvider = builder.Configuration["DB_PROVIDER"]?.ToLower() ?? "sqlserver";
+var dbProvider = builder.Configuration["DB_PROVIDER"]?.ToLower() ?? "sqlite";
 
-if (dbProvider == "postgresql")
+if (dbProvider == "mongodb")
+{
+    if (args.Any(x => x == UseLocalArgs) || configArgs.Any(x => x == UseLocalArgs))
+    {
+        builder.Services.AddDbContext<DefectDbContext>(options =>
+        {
+            options.UseMongoDB(builder.Configuration.GetConnectionString("Default") ?? "mongodb://localhost:27017", "DefectDb");
+        });
+    }
+    else
+    {
+        builder.AddMongoDBClient("DefectDb");
+        builder.Services.AddDbContext<DefectDbContext>((serviceProvider, options) =>
+        {
+            options.UseMongoDB(serviceProvider.GetRequiredService<IMongoClient>(), "DefectDb");
+            options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+        });
+    }
+}
+else if (dbProvider == "postgresql")
 {
     if (args.Any(x => x == UseLocalArgs) || configArgs.Any(x => x == UseLocalArgs))
     {
@@ -46,7 +67,7 @@ if (dbProvider == "postgresql")
             });
     }
 }
-else
+else if (dbProvider == "sqlserver")
 {
     if (args.Any(x => x == UseLocalArgs) || configArgs.Any(x => x == UseLocalArgs))
     {
@@ -67,6 +88,30 @@ else
             });
     }
 }
+else
+{
+    // Default to SQLite
+    if (args.Any(x => x == UseLocalArgs) || configArgs.Any(x => x == UseLocalArgs))
+    {
+        builder.Services.AddDbContext<DefectDbContext>(options =>
+        {
+            options.UseSqlite(builder.Configuration.GetConnectionString("Default"), 
+                x => x.MigrationsAssembly("CastAmNow.Defect.Migrations.Sqlite"));
+        });
+    }
+    else
+    {
+        builder.AddSqliteDbContext<DefectDbContext>("DefectDb", configureDbContextOptions:
+            opts =>
+            {
+                opts.UseSqlite(x => x.MigrationsAssembly("CastAmNow.Defect.Migrations.Sqlite"));
+                opts.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
+                opts.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+    }
+}
+
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();

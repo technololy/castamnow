@@ -9,7 +9,10 @@
   <ItemGroup>
 	<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
 	<PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
+	<PackageReference Include="Aspire.MongoDB.Driver.v3" />
+	<PackageReference Include="CommunityToolkit.Aspire.Microsoft.EntityFrameworkCore.Sqlite" />
 	<PackageReference Include="AutoMapper" />
+
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 	<PackageReference Include="Swashbuckle.AspNetCore" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
@@ -24,6 +27,7 @@
     <ProjectReference Include="..\..\..\db\CastAmNow.Defect.Data\CastAmNow.Defect.Data.csproj" />
     <ProjectReference Include="..\..\..\db\CastAmNow.Defect.Migrations.SqlServer\CastAmNow.Defect.Migrations.SqlServer.csproj" />
     <ProjectReference Include="..\..\..\db\CastAmNow.Defect.Migrations.Postgresql\CastAmNow.Defect.Migrations.Postgresql.csproj" />
+    <ProjectReference Include="..\..\..\db\CastAmNow.Defect.Migrations.Sqlite\CastAmNow.Defect.Migrations.Sqlite.csproj" />
     <ProjectReference Include="..\..\infrastructure\CastAmNow.Api.Infrastructure\CastAmNow.Api.Infrastructure.csproj" />
   </ItemGroup>
 

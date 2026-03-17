@@ -10,11 +10,16 @@
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
 		<PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Aspire.MongoDB.Driver.v3" />
+    <PackageReference Include="CommunityToolkit.Aspire.Microsoft.EntityFrameworkCore.Sqlite" />
+
+
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\aspire\CastAmNow.ServiceDefaults\CastAmNow.ServiceDefaults.csproj" />
 	  <ProjectReference Include="..\CastAmNow.Defect.Data\CastAmNow.Defect.Data.csproj" />
 	  <ProjectReference Include="..\CastAmNow.Defect.Migrations.SqlServer\CastAmNow.Defect.Migrations.SqlServer.csproj" />
 	  <ProjectReference Include="..\CastAmNow.Defect.Migrations.Postgresql\CastAmNow.Defect.Migrations.Postgresql.csproj" />
+      <ProjectReference Include="..\CastAmNow.Defect.Migrations.Sqlite\CastAmNow.Defect.Migrations.Sqlite.csproj" />
 	</ItemGroup>
 </Project>

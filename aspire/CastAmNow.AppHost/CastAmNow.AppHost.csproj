@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Sdk Name="Aspire.AppHost.Sdk" Version="9.3.1" />
 
@@ -18,7 +18,10 @@
 	<PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
 	<PackageReference Include="Aspire.Hosting.Azure.Storage" />
 	  <PackageReference Include="Aspire.Hosting.PostgreSQL" />
-  </ItemGroup>
+	  <PackageReference Include="Aspire.Hosting.MongoDB" />
+	  <PackageReference Include="CommunityToolkit.Aspire.Hosting.Sqlite" />
+	</ItemGroup>
+
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\api\defect\CastAmNow.Defect\CastAmNow.Defect.API.csproj" />

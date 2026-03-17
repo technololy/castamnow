@@ -1,4 +1,4 @@
-﻿using CastAmNow.Defect.Data;
+using CastAmNow.Defect.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -34,9 +34,17 @@ public class Worker(IServiceProvider serviceProvider,
 
     private async Task RunMigrationAsync(DefectDbContext dbContext, CancellationToken stoppingToken)
     {
+        if (dbContext.Database.ProviderName == "MongoDB.EntityFrameworkCore")
+        {
+            logger.LogInformation("Skipping relational migrations for MongoDB");
+            return;
+        }
+
         logger.LogInformation("Applying migration to database");
         await dbContext.Database.MigrateAsync(stoppingToken);
     }
+
+
 
     private async Task EnsureDatabaseAsync(DefectDbContext dbContext, CancellationToken stoppingToken)
     {

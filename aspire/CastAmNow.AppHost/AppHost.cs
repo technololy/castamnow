@@ -2,13 +2,20 @@ using Projects;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-var dbProvider = builder.Configuration["DB_PROVIDER"]?.ToLower() ?? "sqlserver";
+var dbProvider = builder.Configuration["DB_PROVIDER"]?.ToLower() ?? "sqlite";
 
 var sqlServer = builder.AddAzureSqlServer("dbserver");
 var postgres = builder.AddPostgres("postgrescastamnow", port: 23456)
     .WithPgAdmin()
     .WithDataVolume($"{nameof(CastAmNow_Web)}")
     .WithLifetime(ContainerLifetime.Persistent);
+var mongo = builder.AddMongoDB("mongodb")
+    .WithDataVolume()
+    .WithLifetime(ContainerLifetime.Persistent);
+
+var sqlite = builder.AddSqlite("DefectDb");
+
+
 var storage = builder.AddAzureStorage("storage");
 var filesContainer = storage.AddBlobContainer("files", blobContainerName: "files");
 
@@ -30,9 +37,14 @@ if (builder.ExecutionContext.IsRunMode)
     });
 }
 
-IResourceBuilder<IResourceWithConnectionString> defectDb = dbProvider == "postgresql" 
-    ? postgres.AddDatabase("DefectDb") 
-    : sqlServer.AddDatabase("DefectDb");
+IResourceBuilder<IResourceWithConnectionString> defectDb = dbProvider switch
+{
+    "postgresql" => postgres.AddDatabase("DefectDb"),
+    "mongodb" => mongo.AddDatabase("DefectDb"),
+    "sqlserver" => sqlServer.AddDatabase("DefectDb"),
+    _ => sqlite
+};
+
 
 var defectApi = builder.AddProject<Projects.CastAmNow_Defect_API>("api")
     .WithReference(defectDb)
@@ -53,14 +65,28 @@ if (dbProvider == "postgresql")
 {
     migrationService.WaitFor(postgres);
 }
-else
+else if (dbProvider == "mongodb")
+{
+    migrationService.WaitFor(mongo);
+}
+else if (dbProvider == "sqlite")
+{
+    // SQLite doesn't need to wait for a container
+}
+else if (dbProvider == "sqlserver")
 {
     migrationService.WaitFor(sqlServer);
 }
+else
+{
+    // SQLite doesn't need to wait for a container
+}
+
+
 
 if (builder.ExecutionContext.IsRunMode)
 {
-    var seedData = builder.AddProject<Projects.CastAmNow_SeedData>("seeddata")
+    var seedData = builder.AddProject<CastAmNow_SeedData>("seeddata")
         .WithReference(defectDb)
         .WithEnvironment("DB_PROVIDER", dbProvider)
         .SeedDatabaseCommand()

@@ -1,13 +1,34 @@
 using CastAmNow.Defect.Data;
 using CastAmNow.SeedData;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 const string UseLocalArgs = "/local";
+
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddOpenTelemetry()
     .WithTracing(tracing => tracing.AddSource(Worker.ActivitySourceName));
-var dbProvider = builder.Configuration["DB_PROVIDER"]?.ToLower() ?? "sqlserver";
+var dbProvider = builder.Configuration["DB_PROVIDER"]?.ToLower() ?? "sqlite";
 
-if (dbProvider == "postgresql")
+if (dbProvider == "mongodb")
+{
+    if (args.Any(x => x == UseLocalArgs))
+    {
+        builder.Services.AddDbContext<DefectDbContext>(options =>
+        {
+            options.UseMongoDB(builder.Configuration.GetConnectionString("Default") ?? "mongodb://localhost:27017", "DefectDb");
+        });
+    }
+    else
+    {
+        builder.AddMongoDBClient("DefectDb");
+        builder.Services.AddDbContext<DefectDbContext>((serviceProvider, options) =>
+        {
+            options.UseMongoDB(serviceProvider.GetRequiredService<IMongoClient>(), "DefectDb");
+        });
+    }
+}
+else if (dbProvider == "postgresql")
+
 {
     if (args.Any(x => x == UseLocalArgs))
     {
@@ -26,7 +47,7 @@ if (dbProvider == "postgresql")
             });
     }
 }
-else
+else if (dbProvider == "sqlserver")
 {
     if (args.Any(x => x == UseLocalArgs))
     {
@@ -45,6 +66,28 @@ else
             });
     }
 }
+else
+{
+    // Default to SQLite
+    if (args.Any(x => x == UseLocalArgs))
+    {
+        builder.Services.AddDbContext<DefectDbContext>(options =>
+        {
+            options.UseSqlite(builder.Configuration.GetConnectionString("Default"), 
+                x => x.MigrationsAssembly("CastAmNow.Defect.Migrations.Sqlite"));
+        });
+    }
+    else
+    {
+        builder.AddSqliteDbContext<DefectDbContext>("DefectDb", configureDbContextOptions:
+            opts => {
+                opts.UseSqlite(x => x.MigrationsAssembly("CastAmNow.Defect.Migrations.Sqlite"));
+                opts.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+    }
+}
+
+
 builder.AddServiceDefaults();
 builder.Services.AddHostedService<Worker>();
 
